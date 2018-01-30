@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using UnityEngine;
 
 namespace UniHumanoid
 {
@@ -29,6 +29,12 @@ namespace UniHumanoid
             private set;
         }
 
+        public Vector3 Offset
+        {
+            get;
+            private set;
+        }
+
         public Channel[] Channels
         {
             get;
@@ -49,15 +55,25 @@ namespace UniHumanoid
 
         public virtual void Parse(StringReader r)
         {
-            // offset
-            r.ReadLine();
+            Offset = ParseOffset(r.ReadLine());
 
             Channels = ParseChannel(r.ReadLine());
         }
 
+        static Vector3 ParseOffset(string line)
+        {
+            var splited = line.Trim().Split();
+            if (splited[0] != "OFFSET")
+            {
+                throw new BvhException("OFFSET is not found");
+            }
+
+            var offset = splited.Skip(1).Where(x => !string.IsNullOrEmpty(x)).Select(x => float.Parse(x)).ToArray();
+            return new Vector3(offset[0], offset[1], offset[2]);
+        }
+
         static Channel[] ParseChannel(string line)
         {
-            // channels
             var splited = line.Trim().Split();
             if (splited[0] != "CHANNELS")
             {
