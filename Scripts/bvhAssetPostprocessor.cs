@@ -52,6 +52,8 @@ namespace UniHumanoid
                 clip.name = root.name;
                 clip.legacy = true;
                 clip.wrapMode = WrapMode.Loop;
+                context.AddObjectToAsset(clip.name, clip);
+
                 var animation = root.AddComponent<Animation>();
                 animation.AddClip(clip, clip.name);
                 animation.clip = clip;
