@@ -20,6 +20,38 @@ namespace UniHumanoid
         Yrotation,
         Zrotation,
     }
+    public static class ChannelExtensions
+    {
+        public static string ToProperty(this Channel ch)
+        {
+            switch (ch)
+            {
+                case Channel.Xposition: return "localPosition.x";
+                case Channel.Yposition: return "localPosition.y";
+                case Channel.Zposition: return "localPosition.z";
+                case Channel.Xrotation: return "localEulerAnglesBaked.x";
+                case Channel.Yrotation: return "localEulerAnglesBaked.y";
+                case Channel.Zrotation: return "localEulerAnglesBaked.z";
+            }
+
+            throw new BvhException("no property for " + ch);
+        }
+
+        public static bool IsLocation(this Channel ch)
+        {
+            switch (ch)
+            {
+                case Channel.Xposition:
+                case Channel.Yposition:
+                case Channel.Zposition: return true;
+                case Channel.Xrotation: 
+                case Channel.Yrotation: 
+                case Channel.Zrotation: return false;
+            }
+
+            throw new BvhException("no property for " + ch);
+        }
+    }
 
     public class BvhNode
     {
@@ -39,6 +71,31 @@ namespace UniHumanoid
         {
             get;
             private set;
+        }
+
+        public Func<float, float, float, Quaternion> GetEulerToRotation()
+        {
+            var order = Channels.Where(x => x == Channel.Xrotation || x == Channel.Yrotation || x == Channel.Zrotation).ToArray();
+
+            return (x, y, z) =>
+            {
+                var xRot = Quaternion.Euler(x, 0, 0);
+                var yRot = Quaternion.Euler(0, y, 0);
+                var zRot = Quaternion.Euler(0, 0, z);
+
+                var r = Quaternion.identity;
+                foreach(var ch in order)
+                {
+                    switch(ch)
+                    {
+                        case Channel.Xrotation: r = r * xRot; break;
+                        case Channel.Yrotation: r = r * yRot; break;
+                        case Channel.Zrotation: r = r * zRot; break;
+                        default: throw new BvhException("no rotation");
+                    }
+                }
+                return r;
+            };
         }
 
         public List<BvhNode> Children
@@ -153,6 +210,93 @@ namespace UniHumanoid
         }
 
         int m_frames;
+        public int FrameCount
+        {
+            get { return m_frames; }
+        }
+
+        public struct PathWithProperty
+        {
+            public string Path;
+            public string Property;
+            public bool IsLocation;
+        }
+
+        public bool TryGetPathWithPropertyFromChannel(ChannelCurve channel, out PathWithProperty pathWithProp)
+        {
+            var index = Channels.ToList().IndexOf(channel);
+            if (index == -1)
+            {
+                pathWithProp = default(PathWithProperty);
+                return false;
+            }
+
+            foreach(var node in Root.Traverse())
+            {
+                for(int i=0; i<node.Channels.Length; ++i, --index)
+                {
+                    if (index == 0)
+                    {
+                        pathWithProp = new PathWithProperty
+                        {
+                            Path=GetPath(node),
+                            Property=node.Channels[i].ToProperty(),
+                            IsLocation=node.Channels[i].IsLocation(),
+                        };
+                        return true;
+                    }
+                }
+            }
+
+            throw new BvhException("channel is not found");
+        }
+
+        public string GetPath(BvhNode node)
+        {
+            var list = new List<string>() { node.Name };
+
+            var current = node;
+            while (current!=null)
+            {
+                current = GetParent(current);
+                if (current != null)
+                {
+                    list.Insert(0, current.Name);
+                }
+            }
+
+            return String.Join("/", list.ToArray());
+        }
+
+        BvhNode GetParent(BvhNode node)
+        {
+            foreach(var x in Root.Traverse())
+            {
+                if (x.Children.Contains(node))
+                {
+                    return x;
+                }
+            }
+
+            return null;
+        }
+
+        public ChannelCurve GetChannel(BvhNode target, Channel channel)
+        {
+            var index = 0;
+            foreach (var node in Root.Traverse())
+            {
+                for (int i = 0; i < node.Channels.Length; ++i, ++index)
+                {
+                    if(node==target && node.Channels[i] == channel)
+                    {
+                        return Channels[index];
+                    }
+                }
+            }
+
+            throw new BvhException("channel is not found");
+        }
 
         public override string ToString()
         {
