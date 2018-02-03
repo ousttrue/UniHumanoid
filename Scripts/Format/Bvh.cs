@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
+
 
 namespace UniHumanoid
 {
@@ -53,6 +53,20 @@ namespace UniHumanoid
         }
     }
 
+    public struct Single3
+    {
+        public Single x;
+        public Single y;
+        public Single z;
+
+        public Single3(Single _x, Single _y, Single _z)
+        {
+            x = _x;
+            y = _y;
+            z = _z;
+        }
+    }
+
     public class BvhNode
     {
         public String Name
@@ -61,7 +75,7 @@ namespace UniHumanoid
             private set;
         }
 
-        public Vector3 Offset
+        public Single3 Offset
         {
             get;
             private set;
@@ -71,31 +85,6 @@ namespace UniHumanoid
         {
             get;
             private set;
-        }
-
-        public Func<float, float, float, Quaternion> GetEulerToRotation()
-        {
-            var order = Channels.Where(x => x == Channel.Xrotation || x == Channel.Yrotation || x == Channel.Zrotation).ToArray();
-
-            return (x, y, z) =>
-            {
-                var xRot = Quaternion.Euler(x, 0, 0);
-                var yRot = Quaternion.Euler(0, y, 0);
-                var zRot = Quaternion.Euler(0, 0, z);
-
-                var r = Quaternion.identity;
-                foreach(var ch in order)
-                {
-                    switch(ch)
-                    {
-                        case Channel.Xrotation: r = r * xRot; break;
-                        case Channel.Yrotation: r = r * yRot; break;
-                        case Channel.Zrotation: r = r * zRot; break;
-                        default: throw new BvhException("no rotation");
-                    }
-                }
-                return r;
-            };
         }
 
         public List<BvhNode> Children
@@ -117,7 +106,7 @@ namespace UniHumanoid
             Channels = ParseChannel(r.ReadLine());
         }
 
-        static Vector3 ParseOffset(string line)
+        static Single3 ParseOffset(string line)
         {
             var splited = line.Trim().Split();
             if (splited[0] != "OFFSET")
@@ -126,7 +115,7 @@ namespace UniHumanoid
             }
 
             var offset = splited.Skip(1).Where(x => !string.IsNullOrEmpty(x)).Select(x => float.Parse(x)).ToArray();
-            return new Vector3(offset[0], offset[1], offset[2]);
+            return new Single3(offset[0], offset[1], offset[2]);
         }
 
         static Channel[] ParseChannel(string line)

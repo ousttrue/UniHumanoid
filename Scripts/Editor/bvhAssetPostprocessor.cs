@@ -190,7 +190,7 @@ namespace UniHumanoid
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)
         {
             var go = new GameObject(node.Name);
-            go.transform.localPosition = node.Offset * toMeter;
+            go.transform.localPosition = node.Offset.ToVector3() * toMeter;
             go.transform.SetParent(parent, false);
 
             var gizmo=go.AddComponent<BoneGizmoDrawer>();
