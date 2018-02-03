@@ -36,5 +36,10 @@ namespace UniHumanoid
         {
             return new Vector3(s3.x, s3.y, s3.z);
         }
+
+        public static Vector3 ToXReversedVector3(this Single3 s3)
+        {
+            return new Vector3(-s3.x, s3.y, s3.z);
+        }
     }
 }

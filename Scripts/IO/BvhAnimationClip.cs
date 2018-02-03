@@ -60,7 +60,7 @@ namespace UniHumanoid
 
             public void AddCurves(Bvh bvh, AnimationClip clip, float toMeter)
             {
-                AddCurve(bvh, clip, PositionX, toMeter);
+                AddCurve(bvh, clip, PositionX, -toMeter);
                 AddCurve(bvh, clip, PositionY, toMeter);
                 AddCurve(bvh, clip, PositionZ, toMeter);
 
@@ -75,7 +75,7 @@ namespace UniHumanoid
                 for (int i = 0; i < bvh.FrameCount; ++i)
                 {
                     var time = (float)(i * bvh.FrameTime.TotalSeconds);
-                    var q = GetRotation(i);
+                    var q = GetRotation(i).ReverseX();
                     curveX.AddKey(time, q.x);
                     curveY.AddKey(time, q.y);
                     curveZ.AddKey(time, q.z);
@@ -120,6 +120,8 @@ namespace UniHumanoid
             {
                 set.Value.AddCurves(bvh, clip, toMeter);
             }
+
+            clip.EnsureQuaternionContinuity();
 
             return clip;
         }
