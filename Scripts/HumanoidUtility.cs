@@ -92,7 +92,7 @@ namespace UniHumanoid
                     return current;
                 }
 
-                current = spine.GetChild(0);
+                current = current.GetChild(0);
             }
             return null;
         }
@@ -161,28 +161,10 @@ namespace UniHumanoid
 
             var hipsChildren = hips.GetChildren().ToArray();
 
-            var leftLeg = GetLeftLeg(hipsChildren);
-            var leftLowerLeg = leftLeg.GetChild(0);
-            var leftFoot = leftLowerLeg.GetChild(0);
-            var leftToes = leftFoot.GetChild(0);
-
-            var rightLeg = GetRightLeg(hipsChildren);
-            var rightLowerLeg = rightLeg.GetChild(0);
-            var rightFoot = rightLowerLeg.GetChild(0);
-            var rightToes = rightFoot.GetChild(0);
-
             var spine = GetSpine(hipsChildren);
 
             var chest = GetChest(spine);
             var chestChildren = chest.GetChildren().ToArray();
-
-            var rightDir = (rightLeg.position - leftLeg.position).normalized;
-
-            var leftArm = GetLeftArm(chest, chestChildren, -rightDir);
-            var leftLowerArm = leftArm.GetChild(0);
-
-            var rightArm = GetRightArm(chest, chestChildren, rightDir);
-            var rightLowerArm = rightArm.GetChild(0);
 
             var neck = GetNeck(chestChildren);
             Transform head = null;
@@ -198,15 +180,53 @@ namespace UniHumanoid
 
             yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Hips, hips);
 
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperLeg, leftLeg);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerLeg, leftLowerLeg);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftFoot, leftFoot);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftToes, leftToes);
+            //
+            // left leg
+            //
+            var leftLeg = GetLeftLeg(hipsChildren).Traverse().Where(x => !x.name.ToLower().Contains("buttock")).ToArray();
+            {
+                if (leftLeg.Length == 3)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperLeg, leftLeg[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerLeg, leftLeg[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftFoot, leftLeg[2]);
+                }
+                else if (leftLeg.Length == 4)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperLeg, leftLeg[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerLeg, leftLeg[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftFoot, leftLeg[2]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftToes, leftLeg[3]);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
 
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperLeg, rightLeg);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerLeg, rightLowerLeg);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightFoot, rightFoot);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightToes, rightToes);
+            //
+            // right leg
+            //
+            var rightLeg = GetRightLeg(hipsChildren).Traverse().Where(x => !x.name.ToLower().Contains("buttock")).ToArray();
+            {
+                if (rightLeg.Length == 3)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperLeg, rightLeg[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerLeg, rightLeg[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightFoot, rightLeg[2]);
+                }
+                else if (rightLeg.Length == 4)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperLeg, rightLeg[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerLeg, rightLeg[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightFoot, rightLeg[2]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightToes, rightLeg[3]);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
 
             yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Spine, spine);
             if (chest != spine)
@@ -219,20 +239,66 @@ namespace UniHumanoid
             }
             yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Head, head);
 
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftLowerArm);
-            if (leftLowerArm.childCount > 0)
+            var rightDir = (rightLeg[0].position - leftLeg[0].position).normalized;
+
+            //
+            // left Arm
+            //
             {
-                var leftHand = leftLowerArm.GetChild(0);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftHand, leftHand);
+                var leftArm = GetLeftArm(chest, chestChildren, -rightDir).Traverse().ToArray();
+
+                if (leftArm.Length == 2)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[1]);
+                }
+                else if (leftArm.Length == 3)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftHand, leftArm[2]);
+                }
+                else if (leftArm.Length >= 4)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftShoulder, leftArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[2]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftHand, leftArm[3]);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
 
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm);
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightLowerArm);
-            if (rightLowerArm.childCount > 0)
+            //
+            // right Arm
+            //
             {
-                var rightHand = rightLowerArm.GetChild(0);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightHand, rightHand);
+                var rightArm = GetRightArm(chest, chestChildren, rightDir).Traverse().ToArray();
+
+                if (rightArm.Length == 2)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[1]);
+                }
+                else if (rightArm.Length == 3)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightHand, rightArm[2]);
+                }
+                else if (rightArm.Length >= 4)
+                {
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightShoulder, rightArm[0]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[1]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[2]);
+                    yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightHand, rightArm[3]);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 
