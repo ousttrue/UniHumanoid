@@ -48,6 +48,8 @@ namespace UniHumanoid
             animation.AddClip(clip, clip.name);
             animation.clip = clip;
             animation.Play();
+
+            // create avator
         }
 
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)
