@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -80,7 +81,15 @@ namespace UniHumanoid
                     var avatar = m_target.CreateAvatar();
                     if (avatar != null)
                     {
-                        var path = string.Format("Assets/{0}.asset", avatar.name);
+                        //var parentObject = PrefabUtility.GetPrefabParent(this);
+                        //var assetPath = AssetDatabase.GetAssetPath(parentObject);
+                        var prefabRoot = PrefabUtility.GetPrefabParent(m_target.gameObject);
+                        var assetPath = AssetDatabase.GetAssetPath(prefabRoot);
+
+                        var path = (string.IsNullOrEmpty(assetPath))
+                            ? string.Format("Assets/{0}.asset", avatar.name)
+                            : string.Format("{0}/{1}.asset", Path.GetDirectoryName(assetPath), Path.GetFileNameWithoutExtension(assetPath))
+                            ;
                         AssetDatabase.CreateAsset(avatar, path);
                         Debug.LogFormat("Create avatar {0}", path);
                     }
