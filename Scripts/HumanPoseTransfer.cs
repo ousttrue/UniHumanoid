@@ -19,8 +19,16 @@ namespace UniHumanoid
         [SerializeField]
         HumanPoseTransfer m_source;
 
+        [SerializeField]
+        HumanPoseClip m_poseClip;
+
         HumanPoseHandler m_handler;
         private void Awake()
+        {
+            Setup();
+        }
+
+        public void Setup()
         {
             if (Avatar == null)
             {
@@ -35,6 +43,12 @@ namespace UniHumanoid
 
         public bool GetPose(int frameCount, out HumanPose pose)
         {
+            if (m_poseClip != null)
+            {
+                m_poseClip.GetPose(out pose);
+                return true;
+            }
+
             if (m_handler == null)
             {
                 pose = m_pose;
