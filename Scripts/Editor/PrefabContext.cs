@@ -72,7 +72,7 @@ namespace UniHumanoid
             {
                 //Debug.LogFormat("ReplacePrefab: {0}", m_prefabPath);
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(m_prefabPath);
-                PrefabUtility.ReplacePrefab(m_go, prefab, ReplacePrefabOptions.ConnectToPrefab);
+                PrefabUtility.ReplacePrefab(m_go, prefab, ReplacePrefabOptions.ReplaceNameBased);
             }
             else
             {

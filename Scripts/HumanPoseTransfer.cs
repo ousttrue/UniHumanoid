@@ -6,13 +6,13 @@ namespace UniHumanoid
     public class HumanPoseTransfer : MonoBehaviour
     {
         [SerializeField]
-        Avatar m_avatar;
+        public Avatar Avatar;
         private void Reset()
         {
             var animator = GetComponent<Animator>();
             if (animator != null)
             {
-                m_avatar = animator.avatar;
+                Avatar = animator.avatar;
             }
         }
 
@@ -22,11 +22,11 @@ namespace UniHumanoid
         HumanPoseHandler m_handler;
         private void Awake()
         {
-            if (m_avatar == null)
+            if (Avatar == null)
             {
                 return;
             }
-            m_handler = new HumanPoseHandler(m_avatar, transform);
+            m_handler = new HumanPoseHandler(Avatar, transform);
         }
 
         HumanPose m_pose;
