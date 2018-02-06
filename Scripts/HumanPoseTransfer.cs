@@ -17,7 +17,7 @@ namespace UniHumanoid
         }
 
         [SerializeField]
-        HumanPoseTransfer m_source;
+        public HumanPoseTransfer Source;
 
         [SerializeField]
         HumanPoseClip m_poseClip;
@@ -25,6 +25,12 @@ namespace UniHumanoid
         HumanPoseHandler m_handler;
         private void Awake()
         {
+            var animator = GetComponent<Animator>();
+            if (animator != null)
+            {
+                Avatar = animator.avatar;
+            }
+
             Setup();
         }
 
@@ -66,7 +72,7 @@ namespace UniHumanoid
 
         private void Update()
         {
-            if (m_source == null)
+            if (Source == null)
             {
                 return;
             }
@@ -75,7 +81,7 @@ namespace UniHumanoid
                 return;
             }
 
-            if(m_source.GetPose(Time.frameCount, out m_pose))
+            if(Source.GetPose(Time.frameCount, out m_pose))
             {
                 m_handler.SetHumanPose(ref m_pose);
             }

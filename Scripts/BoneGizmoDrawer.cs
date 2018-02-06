@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 namespace UniHumanoid
@@ -11,11 +10,13 @@ namespace UniHumanoid
 
         void OnDrawGizmos()
         {
+#if UNITY_EDITOR
             Gizmos.color = Color.yellow;
             Gizmos.DrawCube(transform.position, SIZE);
             Gizmos.DrawLine(transform.parent.position, transform.position);
 
-            Handles.Label(transform.position, name);
+            UnityEditor.Handles.Label(transform.position, name);
+#endif
         }
     }
 }
