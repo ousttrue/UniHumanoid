@@ -54,4 +54,8 @@ Create avatar.
 
 ![gizmo](doc/BoneMappingGizmo.png)
 ![inspector](doc/BoneMappingInspector.png)
+
+These humanoids imported by [UniGLTF](https://github.com/ousttrue/UniGLTF) and created human avatar by BoneMapping. 
+
 ![humanoid](doc/humanoid.gif)
+
