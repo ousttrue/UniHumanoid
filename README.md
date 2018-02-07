@@ -26,13 +26,17 @@ Avatar is saved to prefab's folder and is set to Animator.
 ## Transfer humanoid pose to other humanoid
 
 Set avatar to HumanPoseTransfer attached to bvh gameobject.
+
 Instanciate target humanoid model from asset, For example fbx.
-Attach HumanPoseTransfer to new human model and set to bvh HumanPoseTransfer's Source of bvh gameobject. Then, play transfer pose from bvh to new humanoid ! 
+Attach HumanPoseTransfer to new human model and set to bvh HumanPoseTransfer's Source of bvh gameobject. 
+![humanpose transfer target](doc/humanpose_transfer_inspector.png)
+
+Then, Bvh animtion copy to new humanoid ! 
 ![humanpose transfer](doc/humanpose_transfer.png)
 
 ## BoneMapping
 
-This script help create human avatar for GameObject that has not Official Importer, for example bvh, blender etc.
+This script help create human avatar for GameObject that has not Official Importer like fbx and blend.
 First, attach this script to GameObject that has Animator with HumanAvatar.
 
 Next, setup below.
