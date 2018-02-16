@@ -7,6 +7,7 @@ namespace UniHumanoid
     public interface IImporterContext : IDisposable
     {
         String Path { get; }
+        GameObject Root { get; }
         void SetMainGameObject(string key, GameObject go);
         void AddObjectToAsset(string key, UnityEngine.Object o);
     }
@@ -14,6 +15,12 @@ namespace UniHumanoid
     public class RuntimeContext : IImporterContext
     {
         public string Path
+        {
+            get;
+            private set;
+        }
+
+        public GameObject Root
         {
             get;
             private set;
@@ -34,6 +41,7 @@ namespace UniHumanoid
 
         public void SetMainGameObject(string key, GameObject go)
         {
+            Root = go;
         }
     }
 }

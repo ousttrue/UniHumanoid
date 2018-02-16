@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniHumanoid
 {
-    class PrefabContext : IImporterContext
+    public class PrefabContext : IImporterContext
     {
         public string Path
         {
@@ -48,6 +48,7 @@ namespace UniHumanoid
         }
 
         GameObject m_go;
+        public GameObject Root { get { return m_go; } }
         public void SetMainGameObject(string key, GameObject go)
         {
             m_go = go;

@@ -63,6 +63,7 @@ namespace UniHumanoid
             var boneMapping = root.AddComponent<BoneMapping>();
             boneMapping.Bones[(int)HumanBodyBones.Hips] = hips.gameObject;
             boneMapping.GuessBoneMapping();
+            boneMapping.CreateAvatar();
 
             root.AddComponent<HumanPoseTransfer>();
         }

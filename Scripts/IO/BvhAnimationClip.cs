@@ -91,6 +91,7 @@ namespace UniHumanoid
         public static AnimationClip CreateAnimationClip(Bvh bvh, float toMeter)
         {
             var clip = new AnimationClip();
+            clip.legacy = true;
 
             var curveMap = new Dictionary<BvhNode, CurveSet>();
 

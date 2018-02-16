@@ -7,7 +7,7 @@ namespace UniHumanoid
     public class BoneMapping : MonoBehaviour
     {
         [SerializeField]
-        public GameObject[] Bones;
+        public GameObject[] Bones= new GameObject[(int)HumanBodyBones.LastBone];
 
         private void Reset()
         {
