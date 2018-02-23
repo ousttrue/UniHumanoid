@@ -11,11 +11,14 @@ namespace UniHumanoid
         void OnDrawGizmos()
         {
 #if UNITY_EDITOR
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(transform.position, SIZE);
-            Gizmos.DrawLine(transform.parent.position, transform.position);
+            if (transform.parent != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawCube(transform.position, SIZE);
+                Gizmos.DrawLine(transform.parent.position, transform.position);
 
-            UnityEditor.Handles.Label(transform.position, name);
+                UnityEditor.Handles.Label(transform.position, name);
+            }
 #endif
         }
     }
