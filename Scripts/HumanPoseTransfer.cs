@@ -5,8 +5,33 @@ namespace UniHumanoid
 {
     public class HumanPoseTransfer : MonoBehaviour
     {
+        public enum HumanPoseTransferSourceType
+        {
+            HumanPoseHandler,
+            HumanPoseClip,
+        }
+
+        [SerializeField]
+        public HumanPoseTransferSourceType SourceType;
+
         [SerializeField]
         public Avatar Avatar;
+
+        #region Standalone
+        public HumanPose CreatePose()
+        {
+            var handler = new HumanPoseHandler(Avatar, transform);
+            var pose = default(HumanPose);
+            handler.GetHumanPose(ref pose);
+            return pose;
+        }
+        public void SetPose(HumanPose pose)
+        {
+            var handler = new HumanPoseHandler(Avatar, transform);
+            handler.SetHumanPose(ref pose);
+        }
+        #endregion
+
         private void Reset()
         {
             var animator = GetComponent<Animator>();
@@ -20,7 +45,7 @@ namespace UniHumanoid
         public HumanPoseTransfer Source;
 
         [SerializeField]
-        HumanPoseClip m_poseClip;
+        public HumanPoseClip PoseClip;
 
         HumanPoseHandler m_handler;
         private void Awake()
@@ -49,9 +74,9 @@ namespace UniHumanoid
 
         public bool GetPose(int frameCount, out HumanPose pose)
         {
-            if (m_poseClip != null)
+            if (PoseClip != null)
             {
-                m_poseClip.GetPose(out pose);
+                PoseClip.GetPose(out pose);
                 return true;
             }
 

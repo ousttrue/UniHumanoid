@@ -20,5 +20,12 @@ namespace UniHumanoid
                 muscles = muscles
             };
         }
+
+        public void SetPose(ref HumanPose pose)
+        {
+            bodyPosition = pose.bodyPosition;
+            bodyRotation = pose.bodyRotation;
+            muscles = (float[])pose.muscles.Clone();
+        }
     }
 }
