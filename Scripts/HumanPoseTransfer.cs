@@ -27,8 +27,18 @@ namespace UniHumanoid
         }
         public void SetPose(HumanPose pose)
         {
-            var handler = new HumanPoseHandler(Avatar, transform);
+            SetPose(Avatar, transform, pose);
+        }
+        public static void SetPose(Avatar avatar, Transform transform, HumanPose pose)
+        {
+            var handler = new HumanPoseHandler(avatar, transform);
             handler.SetHumanPose(ref pose);
+        }
+        public static void SetTPose(Avatar avatar, Transform transform)
+        {
+            var humanPoseClip = Resources.Load<HumanPoseClip>(HumanPoseClip.TPoseResourcePath);
+            var pose = humanPoseClip.GetPose();
+            HumanPoseTransfer.SetPose(avatar, transform, pose);
         }
         #endregion
 
@@ -76,7 +86,7 @@ namespace UniHumanoid
         {
             if (PoseClip != null)
             {
-                PoseClip.GetPose(out pose);
+                pose = PoseClip.GetPose();
                 return true;
             }
 

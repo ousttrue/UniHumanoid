@@ -59,7 +59,7 @@ namespace UniHumanoid
                 var pose = ((HumanPoseTransfer)serializedObject.targetObject).CreatePose();
 
                 var clip = ScriptableObject.CreateInstance<HumanPoseClip>();
-                clip.SetPose(ref pose);
+                clip.ApplyPose(ref pose);
 
                 var assetPath = string.Format("Assets/{0}.pose.asset", serializedObject.targetObject.name);
                 AssetDatabase.CreateAsset(clip, assetPath);
@@ -79,8 +79,7 @@ namespace UniHumanoid
                 //Debug.Log("clip != old");
                 if (_target.PoseClip != null)
                 {
-                    var pose = default(HumanPose);
-                    _target.PoseClip.GetPose(out pose);
+                    var pose = _target.PoseClip.GetPose();
                     _target.SetPose(pose);
                 }
             }

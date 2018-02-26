@@ -5,15 +5,17 @@ namespace UniHumanoid
 {
     public class HumanPoseClip : ScriptableObject
     {
+        public const string TPoseResourcePath = "T-Pose.pose";
+
         public Vector3 bodyPosition;
 
         public Quaternion bodyRotation;
 
         public float[] muscles;
 
-        public void GetPose(out HumanPose pose)
+        public HumanPose GetPose()
         {
-            pose = new HumanPose
+            return new HumanPose
             {
                 bodyPosition = bodyPosition,
                 bodyRotation = bodyRotation,
@@ -21,7 +23,7 @@ namespace UniHumanoid
             };
         }
 
-        public void SetPose(ref HumanPose pose)
+        public void ApplyPose(ref HumanPose pose)
         {
             bodyPosition = pose.bodyPosition;
             bodyRotation = pose.bodyRotation;
