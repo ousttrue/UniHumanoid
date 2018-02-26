@@ -315,10 +315,8 @@ namespace UniHumanoid
             throw new KeyNotFoundException();
         }
 
-        static Avatar CreateAvatar(Transform root, Transform[] joints)
+        public static Avatar CreateAvatar(Transform root, Dictionary<HumanBodyBones, Transform> map)
         {
-            var map = TraverseSkeleton(root, joints).ToDictionary(x => x.Key, x => x.Value);
-
             var description = new HumanDescription
             {
                 human = map.Select(x =>
