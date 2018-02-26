@@ -9,12 +9,12 @@ namespace UniHumanoid
         readonly Vector3 SIZE = new Vector3(size, size, size);
 
         [SerializeField]
-        bool m_draw;
+        public bool Draw = true;
 
         void OnDrawGizmos()
         {
 #if UNITY_EDITOR
-            if (m_draw && transform.parent != null)
+            if (Draw && transform.parent != null)
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawCube(transform.position, SIZE);

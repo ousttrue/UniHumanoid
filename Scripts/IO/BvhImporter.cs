@@ -76,7 +76,8 @@ namespace UniHumanoid
             go.transform.localPosition = node.Offset.ToXReversedVector3() * toMeter;
             go.transform.SetParent(parent, false);
 
-            /*var gizmo =*/ go.AddComponent<BoneGizmoDrawer>();
+            var gizmo = go.AddComponent<BoneGizmoDrawer>();
+            gizmo.Draw = true;
 
             foreach (var child in node.Children)
             {
