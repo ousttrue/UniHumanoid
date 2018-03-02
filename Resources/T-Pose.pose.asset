@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fdf4ef744a103a4ca01657c00d7fec2, type: 3}
-  m_Name: unitychan(Clone).pose
+  m_Name: T-Pose.pose
   m_EditorClassIdentifier: 
   bodyPosition: {x: 0.0024022944, y: 1.000028, z: 0.0019842784}
   bodyRotation: {x: -0, y: 0.000000014901161, z: 0.000000014901161, w: 1}
