@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace UniHumanoid
 {
+    [Serializable]
     public struct BoneLimit
     {
         public HumanBodyBones humanBone;
@@ -62,15 +63,16 @@ namespace UniHumanoid
         }
     }
 
+    [Serializable]
     public class AvatarDescription : ScriptableObject
     {
-        public float armStretch;
-        public float legStretch;
-        public float upperArmTwist;
-        public float lowerArmTwist;
-        public float upperLegTwist;
-        public float lowerLegTwist;
-        public float feetSpacing;
+        public float armStretch = 0.05f;
+        public float legStretch = 0.05f;
+        public float upperArmTwist = 0.5f;
+        public float lowerArmTwist = 0.5f;
+        public float upperLegTwist = 0.5f;
+        public float lowerLegTwist = 0.5f;
+        public float feetSpacing = 0;
         public bool hasTranslationDoF;
         public BoneLimit[] human;
 
@@ -94,6 +96,17 @@ namespace UniHumanoid
         public Avatar CreateAvatar(Transform root)
         {
             return AvatarBuilder.BuildHumanAvatar(root.gameObject, ToHumanDescription(root));
+        }
+
+        public static AvatarDescription CreateFrom(Avatar avatar)
+        {
+            var description = default(HumanDescription);
+            if (!GetHumanDescription(avatar, ref description))
+            {
+                return null;
+            }
+
+            return CreateFrom(description);
         }
 
         public static AvatarDescription CreateFrom(HumanDescription description)
@@ -141,7 +154,7 @@ namespace UniHumanoid
         /// <param name="target"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        public static bool GetHumanDescription(GameObject target, ref HumanDescription des)
+        public static bool GetHumanDescription(UnityEngine.Object target, ref HumanDescription des)
         {
             if (target != null)
             {
