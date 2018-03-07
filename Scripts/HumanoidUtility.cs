@@ -301,46 +301,5 @@ namespace UniHumanoid
                 }
             }
         }
-
-        public static String ToHumanBoneName(HumanBodyBones b)
-        {
-            foreach (var x in HumanTrait.BoneName)
-            {
-                if (x.Replace(" ", "") == b.ToString())
-                {
-                    return x;
-                }
-            }
-
-            throw new KeyNotFoundException();
-        }
-
-        public static Avatar CreateAvatar(Transform root, Dictionary<HumanBodyBones, Transform> map)
-        {
-            var description = new HumanDescription
-            {
-                human = map.Select(x =>
-                {
-                    var hb = new HumanBone
-                    {
-                        boneName = x.Value.name,
-                        humanName = ToHumanBoneName(x.Key)
-
-                    };
-                    hb.limit.useDefaultValues = true;
-                    return hb;
-                }).ToArray(),
-                skeleton = root.Traverse().Select(x => x.ToSkeletonBone()).ToArray(),
-                lowerArmTwist = 0.5f,
-                upperArmTwist = 0.5f,
-                upperLegTwist = 0.5f,
-                lowerLegTwist = 0.5f,
-                armStretch = 0.05f,
-                legStretch = 0.05f,
-                feetSpacing = 0.0f,
-            };
-
-            return AvatarBuilder.BuildHumanAvatar(root.gameObject, description);
-        }
     }
 }

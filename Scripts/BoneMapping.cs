@@ -7,7 +7,7 @@ namespace UniHumanoid
     public class BoneMapping : MonoBehaviour
     {
         [SerializeField]
-        public GameObject[] Bones= new GameObject[(int)HumanBodyBones.LastBone];
+        public GameObject[] Bones = new GameObject[(int)HumanBodyBones.LastBone];
 
         private void Reset()
         {
@@ -18,7 +18,7 @@ namespace UniHumanoid
             {
                 if (animator.avatar != null)
                 {
-                    foreach(HumanBodyBones key in Enum.GetValues(typeof(HumanBodyBones)))
+                    foreach (HumanBodyBones key in Enum.GetValues(typeof(HumanBodyBones)))
                     {
                         if (key == HumanBodyBones.LastBone)
                         {
@@ -43,7 +43,7 @@ namespace UniHumanoid
                 return;
             }
 
-            var bones = HumanoidUtility.TraverseSkeleton(hips.transform, 
+            var bones = HumanoidUtility.TraverseSkeleton(hips.transform,
                 hips.transform.Traverse().ToArray()).ToArray();
             foreach (var x in bones)
             {
@@ -68,7 +68,13 @@ namespace UniHumanoid
             }
         }
 
-        public Avatar CreateAvatar()
+        public struct AvatarWithDescription
+        {
+            public AvatarDescription Description;
+            public Avatar Avatar;
+        }
+
+        public AvatarWithDescription CreateAvatar()
         {
             var map = Bones
                 .Select((x, i) => new { i, x })
@@ -79,29 +85,9 @@ namespace UniHumanoid
             var copy = Instantiate(gameObject);
             try
             {
-                var description = new HumanDescription
-                {
-                    human = map.Select(x =>
-                    {
-                        var hb = new HumanBone
-                        {
-                            boneName = x.Value.name,
-                            humanName = HumanoidUtility.ToHumanBoneName(x.Key)
-                        };
-                        hb.limit.useDefaultValues = true;
-                        return hb;
-                    }).ToArray(),
-                    skeleton = copy.transform.Traverse().Select(x => x.ToSkeletonBone()).ToArray(),
-                    lowerArmTwist = 0.5f,
-                    upperArmTwist = 0.5f,
-                    upperLegTwist = 0.5f,
-                    lowerLegTwist = 0.5f,
-                    armStretch = 0.05f,
-                    legStretch = 0.05f,
-                    feetSpacing = 0.0f,
-                };
-
-                var avatar=AvatarBuilder.BuildHumanAvatar(copy, description);
+                var avatarDescription = AvatarDescription.Create(map);
+                avatarDescription.name = name + ".description";
+                var avatar = avatarDescription.CreateAvatar(copy.transform);
                 avatar.name = name;
 
                 var animator = GetComponent<Animator>();
@@ -110,7 +96,17 @@ namespace UniHumanoid
                     animator.avatar = avatar;
                 }
 
-                return avatar;
+                var transfer = GetComponent<HumanPoseTransfer>();
+                if (transfer != null)
+                {
+                    transfer.Avatar = avatar;
+                }
+
+                return new AvatarWithDescription
+                {
+                    Avatar = avatar,
+                    Description = avatarDescription,
+                };
             }
             finally
             {

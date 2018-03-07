@@ -78,8 +78,8 @@ namespace UniHumanoid
 
                 if (GUILayout.Button("Create avatar"))
                 {
-                    var avatar = m_target.CreateAvatar();
-                    if (avatar != null)
+                    var avatarWithDescription = m_target.CreateAvatar();
+                    if (avatarWithDescription.Avatar != null)
                     {
                         //var parentObject = PrefabUtility.GetPrefabParent(this);
                         //var assetPath = AssetDatabase.GetAssetPath(parentObject);
@@ -87,10 +87,12 @@ namespace UniHumanoid
                         var assetPath = AssetDatabase.GetAssetPath(prefabRoot);
 
                         var path = (string.IsNullOrEmpty(assetPath))
-                            ? string.Format("Assets/{0}.asset", avatar.name)
+                            ? string.Format("Assets/{0}.asset", avatarWithDescription.Avatar.name)
                             : string.Format("{0}/{1}.asset", Path.GetDirectoryName(assetPath), Path.GetFileNameWithoutExtension(assetPath))
                             ;
-                        AssetDatabase.CreateAsset(avatar, path);
+                        AssetDatabase.CreateAsset(avatarWithDescription.Description, path); // overwrite
+                        AssetDatabase.AddObjectToAsset(avatarWithDescription.Avatar, path);
+                        AssetDatabase.ImportAsset(path);
                         Debug.LogFormat("Create avatar {0}", path);
                     }
                     else
