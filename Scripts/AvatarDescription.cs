@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using System;
 using System.Linq;
@@ -98,6 +100,7 @@ namespace UniHumanoid
             return AvatarBuilder.BuildHumanAvatar(root.gameObject, ToHumanDescription(root));
         }
 
+#if UNITY_EDITOR
         public static AvatarDescription CreateFrom(Avatar avatar)
         {
             var description = default(HumanDescription);
@@ -108,6 +111,7 @@ namespace UniHumanoid
 
             return CreateFrom(description);
         }
+#endif
 
         public static AvatarDescription CreateFrom(HumanDescription description)
         {
@@ -148,6 +152,7 @@ namespace UniHumanoid
             return avatarDescription;
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// * https://answers.unity.com/questions/612177/how-can-i-access-human-avatar-bone-and-muscle-valu.html
         /// </summary>
@@ -177,5 +182,6 @@ namespace UniHumanoid
             }
             return false;
         }
+#endif
     }
 }
