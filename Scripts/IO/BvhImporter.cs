@@ -7,27 +7,25 @@ namespace UniHumanoid
 {
     public static class BvhImporter
     {
-        public static void Import(IImporterContext context)
+        public static void Import(ImporterContext context)
         {
             //
             // parse
             //
-            var src = File.ReadAllText(context.Path, Encoding.UTF8);
-            var bvh = Bvh.Parse(src);
-            Debug.LogFormat("parsed {0}", bvh);
+            context.Source = File.ReadAllText(context.Path, Encoding.UTF8);
+            context.Bvh = Bvh.Parse(context.Source);
+            Debug.LogFormat("parsed {0}", context.Bvh);
 
             //
             // build hierarchy
             //
-            var root = new GameObject(Path.GetFileNameWithoutExtension(context.Path));
-            root.AddComponent<Animator>();
+            context.Root = new GameObject(Path.GetFileNameWithoutExtension(context.Path));
+            context.Root.AddComponent<Animator>();
 
-            context.SetMainGameObject(root.name, root);
-
-            BuildHierarchy(root.transform, bvh.Root, 1.0f);
+            BuildHierarchy(context.Root.transform, context.Bvh.Root, 1.0f);
 
             var minY = 0.0f;
-            foreach (var x in root.transform.Traverse())
+            foreach (var x in context.Root.transform.Traverse())
             {
                 if (x.position.y < minY)
                 {
@@ -37,37 +35,34 @@ namespace UniHumanoid
 
             var toMeter = 1.0f / (-minY);
             Debug.LogFormat("minY: {0} {1}", minY, toMeter);
-            foreach (var x in root.transform.Traverse())
+            foreach (var x in context.Root.transform.Traverse())
             {
                 x.localPosition *= toMeter;
             }
 
             // foot height to 0
-            var hips = root.transform.GetChild(0);
+            var hips = context.Root.transform.GetChild(0);
             hips.position = new Vector3(0, -minY * toMeter, 0);
 
             //
             // create AnimationClip
             //
-            var clip = BvhAnimation.CreateAnimationClip(bvh, toMeter);
-            clip.name = root.name;
-            clip.legacy = true;
-            clip.wrapMode = WrapMode.Loop;
-            context.AddObjectToAsset(clip.name, clip);
+            context.Animation = BvhAnimation.CreateAnimationClip(context.Bvh, toMeter);
+            context.Animation.name = context.Root.name;
+            context.Animation.legacy = true;
+            context.Animation.wrapMode = WrapMode.Loop;
 
-            var animation = root.AddComponent<Animation>();
-            animation.AddClip(clip, clip.name);
-            animation.clip = clip;
+            var animation = context.Root.AddComponent<Animation>();
+            animation.AddClip(context.Animation, context.Animation.name);
+            animation.clip = context.Animation;
             animation.Play();
 
-            var boneMapping = root.AddComponent<BoneMapping>();
+            var boneMapping = context.Root.AddComponent<BoneMapping>();
             boneMapping.Bones[(int)HumanBodyBones.Hips] = hips.gameObject;
             boneMapping.GuessBoneMapping();
             var avatarWithDescription = boneMapping.CreateAvatar();
-            context.AddObjectToAsset(avatarWithDescription.Avatar.name, avatarWithDescription.Avatar);
-            context.AddObjectToAsset(avatarWithDescription.Description.name, avatarWithDescription.Description);
 
-            var humanPoseTransfer = root.AddComponent<HumanPoseTransfer>();
+            var humanPoseTransfer = context.Root.AddComponent<HumanPoseTransfer>();
             humanPoseTransfer.Avatar = avatarWithDescription.Avatar;
         }
 

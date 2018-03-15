@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -17,9 +16,19 @@ namespace UniHumanoid
                 if (ext == ".bvh")
                 {
                     Debug.LogFormat("ImportBvh: {0}", path);
-                    using (var context = new PrefabContext(path))
+                    var context = new ImporterContext
+                    {
+                        Path=path,
+                    };
+                    try
                     {
                         BvhImporter.Import(context);
+                        context.SaveAsAsset();
+                        context.Destroy(false);
+                    }
+                    catch(Exception)
+                    {
+                        context.Destroy(true);
                     }
                 }
             }
