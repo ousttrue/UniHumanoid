@@ -31,6 +31,7 @@ namespace UniHumanoid
         public GameObject Root;
         public List<Transform> Nodes = new List<Transform>();
         public AnimationClip Animation;
+        public Avatar Avatar;
         #endregion
 
         string m_prefabPath;
@@ -88,6 +89,7 @@ namespace UniHumanoid
         IEnumerable<UnityEngine.Object> ObjectsForSubAsset()
         {
             if (Animation != null) yield return Animation;
+            if (Avatar != null) yield return Avatar;
         }
 
         public void SaveAsAsset()
