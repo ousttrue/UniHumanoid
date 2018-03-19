@@ -9,6 +9,9 @@ namespace UniHumanoid
         [SerializeField]
         public GameObject[] Bones = new GameObject[(int)HumanBodyBones.LastBone];
 
+        [SerializeField]
+        public AvatarDescription Description;
+
         private void Reset()
         {
             Bones = new GameObject[(int)HumanBodyBones.LastBone];
@@ -68,13 +71,7 @@ namespace UniHumanoid
             }
         }
 
-        public struct AvatarWithDescription
-        {
-            public AvatarDescription Description;
-            public Avatar Avatar;
-        }
-
-        public AvatarWithDescription CreateAvatar()
+        public Avatar CreateAvatar()
         {
             var map = Bones
                 .Select((x, i) => new { i, x })
@@ -85,9 +82,13 @@ namespace UniHumanoid
             var copy = Instantiate(gameObject);
             try
             {
-                var avatarDescription = AvatarDescription.Create(map);
-                avatarDescription.name = name + ".description";
-                var avatar = avatarDescription.CreateAvatar(copy.transform);
+                if (Description == null)
+                {
+                    Description = AvatarDescription.Create();
+                }
+                Description.SetHumanBones(map);
+                Description.name = name + ".description";
+                var avatar = Description.CreateAvatar(copy.transform);
                 avatar.name = name;
 
                 var animator = GetComponent<Animator>();
@@ -102,11 +103,7 @@ namespace UniHumanoid
                     transfer.Avatar = avatar;
                 }
 
-                return new AvatarWithDescription
-                {
-                    Avatar = avatar,
-                    Description = avatarDescription,
-                };
+                return avatar;
             }
             finally
             {

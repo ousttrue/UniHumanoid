@@ -60,11 +60,11 @@ namespace UniHumanoid
             var boneMapping = context.Root.AddComponent<BoneMapping>();
             boneMapping.Bones[(int)HumanBodyBones.Hips] = hips.gameObject;
             boneMapping.GuessBoneMapping();
-            var avatarWithDescription = boneMapping.CreateAvatar();
-            context.Avatar = avatarWithDescription.Avatar;
+            context.Avatar = boneMapping.CreateAvatar();
+            context.AvatarDescription = boneMapping.Description;
 
             var humanPoseTransfer = context.Root.AddComponent<HumanPoseTransfer>();
-            humanPoseTransfer.Avatar = avatarWithDescription.Avatar;
+            humanPoseTransfer.Avatar = context.Avatar;
         }
 
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)

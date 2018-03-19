@@ -78,22 +78,28 @@ namespace UniHumanoid
 
                 if (GUILayout.Button("Create avatar"))
                 {
-                    var avatarWithDescription = m_target.CreateAvatar();
-                    if (avatarWithDescription.Avatar != null)
+                    var avatar = m_target.CreateAvatar();
+                    if (avatar != null)
                     {
-                        //var parentObject = PrefabUtility.GetPrefabParent(this);
-                        //var assetPath = AssetDatabase.GetAssetPath(parentObject);
                         var prefabRoot = PrefabUtility.GetPrefabParent(m_target.gameObject);
-                        var assetPath = AssetDatabase.GetAssetPath(prefabRoot);
+                        var prefabPath = AssetDatabase.GetAssetPath(prefabRoot);
 
-                        var path = (string.IsNullOrEmpty(assetPath))
-                            ? string.Format("Assets/{0}.asset", avatarWithDescription.Avatar.name)
-                            : string.Format("{0}/{1}.asset", Path.GetDirectoryName(assetPath), Path.GetFileNameWithoutExtension(assetPath))
+                        var path = (string.IsNullOrEmpty(prefabPath))
+                            ? string.Format("Assets/{0}.asset", avatar.name)
+                            : string.Format("{0}/{1}.asset", Path.GetDirectoryName(prefabPath), Path.GetFileNameWithoutExtension(prefabPath))
                             ;
-                        AssetDatabase.CreateAsset(avatarWithDescription.Description, path); // overwrite
-                        AssetDatabase.AddObjectToAsset(avatarWithDescription.Avatar, path);
-                        AssetDatabase.ImportAsset(path);
+
+                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m_target.Description)))
+                        {
+                            AssetDatabase.CreateAsset(m_target.Description, path); // overwrite
+                            AssetDatabase.AddObjectToAsset(avatar, path);
+                        }
+                        else
+                        {
+                            AssetDatabase.CreateAsset(avatar, path); // overwrite
+                        }
                         Debug.LogFormat("Create avatar {0}", path);
+                        AssetDatabase.ImportAsset(path);
                     }
                     else
                     {
@@ -192,6 +198,8 @@ namespace UniHumanoid
                 BoneField(HumanBodyBones.LeftLittleIntermediate, HumanBodyBones.RightLittleIntermediate, bones);
                 BoneField(HumanBodyBones.LeftLittleDistal, HumanBodyBones.RightLittleDistal, bones);
             }
+
+            EditorGUILayout.ObjectField("Description", m_target.Description, typeof(AvatarDescription), false);
 
             EditorUtility.SetDirty(m_target);
         }

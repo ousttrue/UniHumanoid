@@ -129,7 +129,7 @@ namespace UniHumanoid
             return avatarDescription;
         }
 
-        public static AvatarDescription Create(Dictionary<HumanBodyBones, Transform> map)
+        public static AvatarDescription Create()
         {
             var avatarDescription = ScriptableObject.CreateInstance<AvatarDescription>();
             avatarDescription.name = "AvatarDescription";
@@ -140,7 +140,12 @@ namespace UniHumanoid
             avatarDescription.upperArmTwist = 0.5f;
             avatarDescription.upperLegTwist = 0.5f;
             avatarDescription.lowerLegTwist = 0.5f;
-            avatarDescription.human = map.Select(x =>
+            return avatarDescription;
+        }
+
+        public void SetHumanBones(Dictionary<HumanBodyBones, Transform> map)
+        {
+            human = map.Select(x =>
             {
                 return new BoneLimit
                 {
@@ -149,7 +154,6 @@ namespace UniHumanoid
                     useDefaultValues = true,
                 };
             }).ToArray();
-            return avatarDescription;
         }
 
 #if UNITY_EDITOR
