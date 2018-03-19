@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +16,15 @@ namespace UniHumanoid
         void OnEnable()
         {
             m_target = (BoneMapping)target;
+
+            var animator = m_target.GetComponent<Animator>();
+            if (animator != null)
+            {
+                m_bones = EachBoneDefs.Select(x => new Bone(
+animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
+.Where(x => x.Head != null && x.Tail != null)
+.ToArray();
+            }
         }
 
         static GameObject ObjectField(GameObject obj)
@@ -204,6 +214,154 @@ namespace UniHumanoid
             EditorUtility.SetDirty(m_target);
         }
 
+        struct Bone
+        {
+            public Transform Head;
+            public Transform Tail;
+
+            public Bone(Transform head, Transform tail)
+            {
+                Head = head;
+                Tail = tail;
+            }
+
+            public void Draw()
+            {
+                Handles.DrawLine(Head.transform.position, Tail.transform.position);
+            }
+        }
+
+        Bone[] m_bones;
+
+        struct BoneDef
+        {
+            public HumanBodyBones Head;
+            public HumanBodyBones Tail;
+
+            public BoneDef(HumanBodyBones head, HumanBodyBones tail)
+            {
+                Head = head;
+                Tail = tail;
+            }
+        }
+        static readonly HumanBodyBones[][] BoneDefs =
+        {
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.Hips,
+                HumanBodyBones.Spine,
+                HumanBodyBones.Chest,
+                HumanBodyBones.Neck,
+                HumanBodyBones.Head,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.Chest,
+                HumanBodyBones.LeftShoulder,
+                HumanBodyBones.LeftUpperArm,
+                HumanBodyBones.LeftLowerArm,
+                HumanBodyBones.LeftHand,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.Chest,
+                HumanBodyBones.RightShoulder,
+                HumanBodyBones.RightUpperArm,
+                HumanBodyBones.RightLowerArm,
+                HumanBodyBones.RightHand,
+            },
+
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftThumbProximal,
+                HumanBodyBones.LeftThumbIntermediate,
+                HumanBodyBones.LeftThumbDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftIndexProximal,
+                HumanBodyBones.LeftIndexIntermediate,
+                HumanBodyBones.LeftIndexDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftMiddleProximal,
+                HumanBodyBones.LeftMiddleIntermediate,
+                HumanBodyBones.LeftMiddleDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftRingProximal,
+                HumanBodyBones.LeftRingIntermediate,
+                HumanBodyBones.LeftRingDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftLittleProximal,
+                HumanBodyBones.LeftLittleIntermediate,
+                HumanBodyBones.LeftLittleDistal,
+            },
+
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightThumbProximal,
+                HumanBodyBones.RightThumbIntermediate,
+                HumanBodyBones.RightThumbDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightIndexProximal,
+                HumanBodyBones.RightIndexIntermediate,
+                HumanBodyBones.RightIndexDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightMiddleProximal,
+                HumanBodyBones.RightMiddleIntermediate,
+                HumanBodyBones.RightMiddleDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightRingProximal,
+                HumanBodyBones.RightRingIntermediate,
+                HumanBodyBones.RightRingDistal,
+            },
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightLittleProximal,
+                HumanBodyBones.RightLittleIntermediate,
+                HumanBodyBones.RightLittleDistal,
+            },
+
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.LeftUpperLeg,
+                HumanBodyBones.LeftLowerLeg,
+                HumanBodyBones.LeftFoot,
+            },
+
+            new HumanBodyBones[]
+            {
+                HumanBodyBones.RightUpperLeg,
+                HumanBodyBones.RightLowerLeg,
+                HumanBodyBones.RightFoot,
+            },
+        };
+        static IEnumerable<BoneDef> EachBoneDefs
+        {
+            get
+            {
+                foreach (var x in BoneDefs)
+                {
+                    var count = x.Length - 1;
+                    for (int i = 0; i < count; ++i)
+                    {
+                        yield return new BoneDef(x[i], x[i + 1]);
+                    }
+                }
+            }
+        }
+
         void DrawBone(HumanBodyBones bone, GameObject go)
         {
             if (go == null)
@@ -223,6 +381,10 @@ namespace UniHumanoid
                 for (int i = 0; i < bones.Length; ++i)
                 {
                     DrawBone((HumanBodyBones)i, bones[i]);
+                }
+                foreach(var x in m_bones)
+                {
+                    x.Draw();
                 }
             }
         }
