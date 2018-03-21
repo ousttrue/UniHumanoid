@@ -180,7 +180,7 @@ namespace UniHumanoid
                     }
                     else
                     {
-                        Debug.LogError("## Please Select Imported Model in Project View not prefab or other things ##");
+                        Debug.LogWarning("## Please Select Imported Model in Project View not prefab or other things ##");
                     }
                 }
             }
