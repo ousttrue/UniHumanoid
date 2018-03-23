@@ -95,7 +95,12 @@ namespace UniHumanoid
             var animator = GetComponent<Animator>();
             if (animator != null)
             {
+                var positionMap = transform.Traverse().ToDictionary(x => x, x => x.position);
                 animator.avatar = avatar;
+                foreach(var x in transform.Traverse())
+                {
+                    x.position = positionMap[x];
+                }
             }
 
             var transfer = GetComponent<HumanPoseTransfer>();
