@@ -71,6 +71,10 @@ namespace UniHumanoid
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Avatar CreateAvatar()
         {
             var map = Bones
@@ -79,43 +83,28 @@ namespace UniHumanoid
                 .ToDictionary(x => (HumanBodyBones)x.i, x => x.x.transform)
                 ;
 
-            var copy = Instantiate(gameObject);
-            try
+            if (Description == null)
             {
-                if (Description == null)
-                {
-                    Description = AvatarDescription.Create();
-                }
-                Description.SetHumanBones(map);
-                Description.name = name + ".description";
-                var avatar = Description.CreateAvatar(copy.transform);
-                avatar.name = name;
-
-                var animator = GetComponent<Animator>();
-                if (animator != null)
-                {
-                    animator.avatar = avatar;
-                }
-
-                var transfer = GetComponent<HumanPoseTransfer>();
-                if (transfer != null)
-                {
-                    transfer.Avatar = avatar;
-                }
-
-                return avatar;
+                Description = AvatarDescription.Create();
             }
-            finally
+            Description.SetHumanBones(map);
+            Description.name = name + ".description";
+            var avatar = Description.CreateAvatar(transform);
+            avatar.name = name;
+
+            var animator = GetComponent<Animator>();
+            if (animator != null)
             {
-                if (Application.isEditor)
-                {
-                    DestroyImmediate(copy);
-                }
-                else
-                {
-                    Destroy(copy);
-                }
+                animator.avatar = avatar;
             }
+
+            var transfer = GetComponent<HumanPoseTransfer>();
+            if (transfer != null)
+            {
+                transfer.Avatar = avatar;
+            }
+
+            return avatar;
         }
     }
 }
