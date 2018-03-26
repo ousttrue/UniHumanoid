@@ -2,6 +2,10 @@
 
 Unity humanoid utility with bvh importer.
 
+## License
+
+* [license](./LICENSE)
+
 ## BVH Importer
 
 Drop bvh file to Assets folder.
