@@ -20,14 +20,6 @@ Instanciate prefab to scene.
 
 That object can play. 
 
-## Create Humanoid avatar from gameobject hierarchy.
-
-BoneMapping is attached to bvh gameobject.
-Press CreateAvtar button.
-Avatar is saved to prefab's folder and is set to Animator.
-
-![bvh bone mapping](doc/bvh_bonemapping.png)
-
 ## Transfer humanoid pose to other humanoid
 
 Set avatar to HumanPoseTransfer attached to bvh gameobject.
@@ -41,7 +33,7 @@ Then, Bvh animtion copy to new humanoid !
 
 ## BoneMapping
 
-This script help create human avatar for GameObject that has not Official Importer like fbx and blend.
+This script help create human avatar from GameObject hierarchy.
 First, attach this script to GameObject that has Animator with HumanAvatar.
 
 Next, setup below.
@@ -57,8 +49,7 @@ If fail to guess bone mapping, you can set bones manually.
 Optional, press Ensure T-Pose.
 Create avatar.
 
-![gizmo](doc/BoneMappingGizmo.png)
-![inspector](doc/BoneMappingInspector.png)
+![bvh bone mapping](doc/bvh_bonemapping.png)
 
 These humanoids imported by [UniGLTF](https://github.com/ousttrue/UniGLTF) and created human avatar by BoneMapping. 
 
