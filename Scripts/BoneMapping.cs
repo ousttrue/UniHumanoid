@@ -7,34 +7,10 @@ namespace UniHumanoid
     public class BoneMapping : MonoBehaviour
     {
         [SerializeField]
-        public float armStretch = 0.05f;
-
-        [SerializeField]
-        public float legStretch = 0.05f;
-
-        [SerializeField]
-        public float upperArmTwist = 0.5f;
-
-        [SerializeField]
-        public float lowerArmTwist = 0.5f;
-
-        [SerializeField]
-        public float upperLegTwist = 0.5f;
-
-        [SerializeField]
-        public float lowerLegTwist = 0.5f;
-
-        [SerializeField]
-        public float feetSpacing = 0;
-
-        [SerializeField]
-        public bool hasTranslationDoF;
-
-        [SerializeField]
-        public BoneLimit[] human;
-
-        [SerializeField]
         public GameObject[] Bones = new GameObject[(int)HumanBodyBones.LastBone];
+
+        [SerializeField]
+        public AvatarDescription Description;
 
         private void Reset()
         {

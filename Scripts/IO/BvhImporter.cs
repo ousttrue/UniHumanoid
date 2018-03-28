@@ -64,6 +64,7 @@ namespace UniHumanoid
             BoneMapping.SetBonesToDescription(boneMapping, description);
             context.Avatar = description.CreateAvatar(context.Root.transform);
             context.Avatar.name = "Avatar";
+            context.AvatarDescription = description;
 
             var humanPoseTransfer = context.Root.AddComponent<HumanPoseTransfer>();
             humanPoseTransfer.Avatar = context.Avatar;

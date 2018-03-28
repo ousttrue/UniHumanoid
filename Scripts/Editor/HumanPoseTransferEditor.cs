@@ -37,8 +37,12 @@ namespace UniHumanoid
 
             EditorGUILayout.PropertyField(m_avatarProp);
 
+            /*
             m_typeProp.intValue =
                 GUILayout.Toolbar(m_typeProp.intValue, SOURCE_TYPES);
+                */
+            m_typeProp.intValue =
+                EditorGUILayout.Popup("SourceType", m_typeProp.intValue, SOURCE_TYPES);
 
             switch ((HumanPoseTransfer.HumanPoseTransferSourceType)m_typeProp.intValue)
             {
@@ -57,7 +61,7 @@ namespace UniHumanoid
             GUILayout.Space(20);
 
             // CreatePose
-            if (GUILayout.Button("Create HumanPose Clip"))
+            if (GUILayout.Button("Pose to HumanPoseClip"))
             {
                 var path = EditorUtility.SaveFilePanel(
                         "Save humanpose",
@@ -78,7 +82,7 @@ namespace UniHumanoid
             }
 
             // CreatePose
-            if (GUILayout.Button("Create Animation Clip"))
+            if (GUILayout.Button("Pose to AnimationClip"))
             {
                 var path = EditorUtility.SaveFilePanel(
                         "Save animnationClip",

@@ -154,31 +154,30 @@ namespace UniHumanoid
             return avatarDescription;
         }
 
-        public static AvatarDescription Create(BoneMapping src)
+        public static AvatarDescription Create(AvatarDescription src=null)
         {
             var avatarDescription = ScriptableObject.CreateInstance<AvatarDescription>();
             avatarDescription.name = "AvatarDescription";
-            avatarDescription.armStretch = src.armStretch;
-            avatarDescription.legStretch = src.legStretch;
-            avatarDescription.feetSpacing = src.feetSpacing;
-            avatarDescription.upperArmTwist = src.upperArmTwist;
-            avatarDescription.lowerArmTwist = src.lowerArmTwist;
-            avatarDescription.upperLegTwist = src.upperLegTwist;
-            avatarDescription.lowerLegTwist = src.lowerLegTwist;
-            return avatarDescription;
-        }
-
-        public static AvatarDescription Create()
-        {
-            var avatarDescription = ScriptableObject.CreateInstance<AvatarDescription>();
-            avatarDescription.name = "AvatarDescription";
-            avatarDescription.armStretch = 0.05f;
-            avatarDescription.legStretch = 0.05f;
-            avatarDescription.feetSpacing = 0.0f;
-            avatarDescription.lowerArmTwist = 0.5f;
-            avatarDescription.upperArmTwist = 0.5f;
-            avatarDescription.upperLegTwist = 0.5f;
-            avatarDescription.lowerLegTwist = 0.5f;
+            if (src != null)
+            {
+                avatarDescription.armStretch = src.armStretch;
+                avatarDescription.legStretch = src.legStretch;
+                avatarDescription.feetSpacing = src.feetSpacing;
+                avatarDescription.upperArmTwist = src.upperArmTwist;
+                avatarDescription.lowerArmTwist = src.lowerArmTwist;
+                avatarDescription.upperLegTwist = src.upperLegTwist;
+                avatarDescription.lowerLegTwist = src.lowerLegTwist;
+            }
+            else
+            {
+                avatarDescription.armStretch = 0.05f;
+                avatarDescription.legStretch = 0.05f;
+                avatarDescription.feetSpacing = 0.0f;
+                avatarDescription.lowerArmTwist = 0.5f;
+                avatarDescription.upperArmTwist = 0.5f;
+                avatarDescription.upperLegTwist = 0.5f;
+                avatarDescription.lowerLegTwist = 0.5f;
+            }
             return avatarDescription;
         }
 

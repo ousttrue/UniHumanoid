@@ -89,7 +89,7 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
 
                 if (GUILayout.Button("Create avatar"))
                 {
-                    var description = AvatarDescription.Create(m_target);
+                    var description = AvatarDescription.Create(m_target.Description);
                     BoneMapping.SetBonesToDescription(m_target, description);
                     var avatar = description.CreateAvatarAndSetup(m_target.transform);
                     if (avatar != null)
@@ -126,10 +126,11 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
 
 1. Model root transform should reset(origin without rotation)
 2. Model forward to Z+(rotate child of model root)
-3. Required bones filled(todo)
+3. Required bones filled
 ", MessageType.Info);
             }
 
+            /*
             m_settingsFoldout = EditorGUILayout.Foldout(m_settingsFoldout, "AvatarSettings");
             if (m_settingsFoldout)
             {
@@ -143,6 +144,7 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
                 EditorGUILayout.Toggle("hasTranslationDoF", m_target.hasTranslationDoF);
                 //public BoneLimit[] human;
             }
+            */
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Arm", EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
@@ -155,7 +157,7 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
             BoneField(HumanBodyBones.LeftLowerArm, HumanBodyBones.RightLowerArm, bones);
             BoneField(HumanBodyBones.LeftHand, HumanBodyBones.RightHand, bones);
 
-            EditorGUILayout.LabelField("Body", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Body and Head", EditorStyles.boldLabel);
             BoneField(HumanBodyBones.Spine, bones);
             BoneField(HumanBodyBones.Chest, bones);
             BoneField(HumanBodyBones.UpperChest, bones);
