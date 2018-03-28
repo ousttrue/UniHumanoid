@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -51,20 +52,57 @@ namespace UniHumanoid
                     PoseHandler();
                     break;
             }
+            GUILayout.Space(20);
 
             // CreatePose
-            GUILayout.Space(20);
-            if (GUILayout.Button("Create PoseClip"))
+            if (GUILayout.Button("Create HumanPose Clip"))
             {
-                var pose = ((HumanPoseTransfer)serializedObject.targetObject).CreatePose();
+                var path = EditorUtility.SaveFilePanel(
+                        "Save humanpose",
+                        Application.dataPath,
+                        string.Format("{0}.pose.asset", serializedObject.targetObject.name),
+                        "asset");
+                var assetPath = ToAssetPath(path);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    var pose = ((HumanPoseTransfer)serializedObject.targetObject).CreatePose();
 
-                var clip = ScriptableObject.CreateInstance<HumanPoseClip>();
-                clip.ApplyPose(ref pose);
+                    var clip = ScriptableObject.CreateInstance<HumanPoseClip>();
+                    clip.ApplyPose(ref pose);
 
-                var assetPath = string.Format("Assets/{0}.pose.asset", serializedObject.targetObject.name);
-                AssetDatabase.CreateAsset(clip, assetPath);
-                Selection.activeObject = clip;
+                    AssetDatabase.CreateAsset(clip, assetPath);
+                    Selection.activeObject = clip;
+                }
             }
+
+            // CreatePose
+            if (GUILayout.Button("Create Animation Clip"))
+            {
+                var path = EditorUtility.SaveFilePanel(
+                        "Save humanpose",
+                        Application.dataPath,
+                        string.Format("{0}.pose.anim", serializedObject.targetObject.name),
+                        "anim");
+                var assetPath = ToAssetPath(path);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    var pose = ((HumanPoseTransfer)serializedObject.targetObject).CreatePose();
+                    var clip = AnimationClipUtility.CreateAnimationClipFromHumanPose(pose);
+                    AssetDatabase.CreateAsset(clip, assetPath);
+                    Selection.activeObject = clip;
+                }
+            }
+        }
+
+        static string ToAssetPath(string src)
+        {
+            src = src.Replace("\\", "/");
+            var basePath = Path.GetFullPath(Application.dataPath + "/..").Replace("\\", "/");
+            if (!src.StartsWith(basePath))
+            {
+                return null;
+            }
+            return src.Substring(basePath.Length + 1);
         }
 
         void PoseClipInspector()
