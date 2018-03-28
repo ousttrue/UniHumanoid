@@ -100,6 +100,31 @@ namespace UniHumanoid
             return AvatarBuilder.BuildHumanAvatar(root.gameObject, ToHumanDescription(root));
         }
 
+        public Avatar CreateAvatarAndSetup(Transform root)
+        {
+            var avatar = CreateAvatar(root);
+            avatar.name = name;
+
+            var animator = root.GetComponent<Animator>();
+            if (animator != null)
+            {
+                var positionMap = root.Traverse().ToDictionary(x => x, x => x.position);
+                animator.avatar = avatar;
+                foreach (var x in root.Traverse())
+                {
+                    x.position = positionMap[x];
+                }
+            }
+
+            var transfer = root.GetComponent<HumanPoseTransfer>();
+            if (transfer != null)
+            {
+                transfer.Avatar = avatar;
+            }
+
+            return avatar;
+        }
+
 #if UNITY_EDITOR
         public static AvatarDescription CreateFrom(Avatar avatar)
         {
@@ -126,6 +151,20 @@ namespace UniHumanoid
             avatarDescription.upperArmTwist = description.upperArmTwist;
             avatarDescription.upperLegTwist = description.upperLegTwist;
             avatarDescription.human = description.human.Select(BoneLimit.From).ToArray();
+            return avatarDescription;
+        }
+
+        public static AvatarDescription Create(BoneMapping src)
+        {
+            var avatarDescription = ScriptableObject.CreateInstance<AvatarDescription>();
+            avatarDescription.name = "AvatarDescription";
+            avatarDescription.armStretch = src.armStretch;
+            avatarDescription.legStretch = src.legStretch;
+            avatarDescription.feetSpacing = src.feetSpacing;
+            avatarDescription.upperArmTwist = src.upperArmTwist;
+            avatarDescription.lowerArmTwist = src.lowerArmTwist;
+            avatarDescription.upperLegTwist = src.upperLegTwist;
+            avatarDescription.lowerLegTwist = src.lowerLegTwist;
             return avatarDescription;
         }
 

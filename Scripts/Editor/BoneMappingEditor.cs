@@ -57,6 +57,7 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
         }
 
         bool m_handFoldout;
+        bool m_settingsFoldout;
 
         public override void OnInspectorGUI()
         {
@@ -88,7 +89,9 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
 
                 if (GUILayout.Button("Create avatar"))
                 {
-                    var avatar = m_target.CreateAvatar();
+                    var description = AvatarDescription.Create(m_target);
+                    BoneMapping.SetBonesToDescription(m_target, description);
+                    var avatar = description.CreateAvatarAndSetup(m_target.transform);
                     if (avatar != null)
                     {
                         var prefabRoot = PrefabUtility.GetPrefabParent(m_target.gameObject);
@@ -98,22 +101,25 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
                             ? string.Format("Assets/{0}.asset", avatar.name)
                             : string.Format("{0}/{1}.asset", Path.GetDirectoryName(prefabPath), Path.GetFileNameWithoutExtension(prefabPath))
                             ;
-
-                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m_target.Description)))
+                        path = EditorUtility.SaveFilePanel(
+                                "Save avatar",
+                                Path.GetDirectoryName(path),
+                                string.Format("{0}.avatar.asset", serializedObject.targetObject.name),
+                                "asset");
+                        var assetPath = HumanPoseTransferEditor.ToAssetPath(path);
+                        if (!string.IsNullOrEmpty(assetPath))
                         {
-                            AssetDatabase.CreateAsset(m_target.Description, path); // overwrite
-                            AssetDatabase.AddObjectToAsset(avatar, path);
+                            AssetDatabase.CreateAsset(description, assetPath); // overwrite
+                            AssetDatabase.AddObjectToAsset(avatar, assetPath);
+
+                            Debug.LogFormat("Create avatar {0}", path);
+                            AssetDatabase.ImportAsset(assetPath);
+                            Selection.activeObject = avatar;
                         }
                         else
                         {
-                            AssetDatabase.CreateAsset(avatar, path); // overwrite
+                            Debug.LogWarning("fail to CreateAvatar");
                         }
-                        Debug.LogFormat("Create avatar {0}", path);
-                        AssetDatabase.ImportAsset(path);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("fail to CreateAvatar");
                     }
                 }
                 EditorGUILayout.HelpBox(@"before create,
@@ -122,6 +128,20 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
 2. Model forward to Z+(rotate child of model root)
 3. Required bones filled(todo)
 ", MessageType.Info);
+            }
+
+            m_settingsFoldout = EditorGUILayout.Foldout(m_settingsFoldout, "AvatarSettings");
+            if (m_settingsFoldout)
+            {
+                EditorGUILayout.FloatField("armStretch", m_target.armStretch);
+                EditorGUILayout.FloatField("legStretch", m_target.legStretch);
+                EditorGUILayout.FloatField("upperArmTwist", m_target.upperArmTwist);
+                EditorGUILayout.FloatField("lowerArmTwist", m_target.lowerArmTwist);
+                EditorGUILayout.FloatField("upperLegTwist", m_target.upperLegTwist);
+                EditorGUILayout.FloatField("lowerLegTwist", m_target.lowerLegTwist);
+                EditorGUILayout.FloatField("feetSpacing", m_target.feetSpacing);
+                EditorGUILayout.Toggle("hasTranslationDoF", m_target.hasTranslationDoF);
+                //public BoneLimit[] human;
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -208,8 +228,6 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
                 BoneField(HumanBodyBones.LeftLittleIntermediate, HumanBodyBones.RightLittleIntermediate, bones);
                 BoneField(HumanBodyBones.LeftLittleDistal, HumanBodyBones.RightLittleDistal, bones);
             }
-
-            EditorGUILayout.ObjectField("Description", m_target.Description, typeof(AvatarDescription), false);
 
             EditorUtility.SetDirty(m_target);
         }

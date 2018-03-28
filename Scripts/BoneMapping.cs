@@ -7,10 +7,34 @@ namespace UniHumanoid
     public class BoneMapping : MonoBehaviour
     {
         [SerializeField]
-        public GameObject[] Bones = new GameObject[(int)HumanBodyBones.LastBone];
+        public float armStretch = 0.05f;
 
         [SerializeField]
-        public AvatarDescription Description;
+        public float legStretch = 0.05f;
+
+        [SerializeField]
+        public float upperArmTwist = 0.5f;
+
+        [SerializeField]
+        public float lowerArmTwist = 0.5f;
+
+        [SerializeField]
+        public float upperLegTwist = 0.5f;
+
+        [SerializeField]
+        public float lowerLegTwist = 0.5f;
+
+        [SerializeField]
+        public float feetSpacing = 0;
+
+        [SerializeField]
+        public bool hasTranslationDoF;
+
+        [SerializeField]
+        public BoneLimit[] human;
+
+        [SerializeField]
+        public GameObject[] Bones = new GameObject[(int)HumanBodyBones.LastBone];
 
         private void Reset()
         {
@@ -71,45 +95,14 @@ namespace UniHumanoid
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Avatar CreateAvatar()
+        public static void SetBonesToDescription(BoneMapping mapping, AvatarDescription description)
         {
-            var map = Bones
+            var map = mapping.Bones
                 .Select((x, i) => new { i, x })
                 .Where(x => x.x != null)
                 .ToDictionary(x => (HumanBodyBones)x.i, x => x.x.transform)
                 ;
-
-            if (Description == null)
-            {
-                Description = AvatarDescription.Create();
-            }
-            Description.SetHumanBones(map);
-            Description.name = name + ".description";
-            var avatar = Description.CreateAvatar(transform);
-            avatar.name = name;
-
-            var animator = GetComponent<Animator>();
-            if (animator != null)
-            {
-                var positionMap = transform.Traverse().ToDictionary(x => x, x => x.position);
-                animator.avatar = avatar;
-                foreach(var x in transform.Traverse())
-                {
-                    x.position = positionMap[x];
-                }
-            }
-
-            var transfer = GetComponent<HumanPoseTransfer>();
-            if (transfer != null)
-            {
-                transfer.Avatar = avatar;
-            }
-
-            return avatar;
+            description.SetHumanBones(map);
         }
     }
 }

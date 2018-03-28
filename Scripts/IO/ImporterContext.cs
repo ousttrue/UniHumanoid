@@ -31,7 +31,6 @@ namespace UniHumanoid
         public GameObject Root;
         public List<Transform> Nodes = new List<Transform>();
         public AnimationClip Animation;
-        public AvatarDescription AvatarDescription;
         public Avatar Avatar;
         #endregion
 
@@ -90,7 +89,6 @@ namespace UniHumanoid
         IEnumerable<UnityEngine.Object> ObjectsForSubAsset()
         {
             if (Animation != null) yield return Animation;
-            if (AvatarDescription != null) yield return AvatarDescription;
             if (Avatar != null) yield return Avatar;
         }
 

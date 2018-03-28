@@ -37,18 +37,20 @@ namespace UniHumanoid
 
             EditorGUILayout.PropertyField(m_avatarProp);
 
-            EditorGUILayout.LabelField("Source");
-
             m_typeProp.intValue =
                 GUILayout.Toolbar(m_typeProp.intValue, SOURCE_TYPES);
 
             switch ((HumanPoseTransfer.HumanPoseTransferSourceType)m_typeProp.intValue)
             {
+                case HumanPoseTransfer.HumanPoseTransferSourceType.None:
+                    serializedObject.ApplyModifiedProperties();
+                    break;
+                
                 case HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseClip:
                     PoseClipInspector();
                     break;
 
-                case HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseHandler:
+                case HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer:
                     PoseHandler();
                     break;
             }
@@ -79,7 +81,7 @@ namespace UniHumanoid
             if (GUILayout.Button("Create Animation Clip"))
             {
                 var path = EditorUtility.SaveFilePanel(
-                        "Save humanpose",
+                        "Save animnationClip",
                         Application.dataPath,
                         string.Format("{0}.pose.anim", serializedObject.targetObject.name),
                         "anim");
@@ -94,7 +96,7 @@ namespace UniHumanoid
             }
         }
 
-        static string ToAssetPath(string src)
+        public static string ToAssetPath(string src)
         {
             src = src.Replace("\\", "/");
             var basePath = Path.GetFullPath(Application.dataPath + "/..").Replace("\\", "/");

@@ -7,7 +7,8 @@ namespace UniHumanoid
     {
         public enum HumanPoseTransferSourceType
         {
-            HumanPoseHandler,
+            None,
+            HumanPoseTransfer,
             HumanPoseClip,
         }
 
@@ -107,18 +108,28 @@ namespace UniHumanoid
 
         private void Update()
         {
-            if (Source == null)
+            switch (SourceType)
             {
-                return;
-            }
-            if (m_handler == null)
-            {
-                return;
-            }
+                case HumanPoseTransferSourceType.None:
+                    break;
 
-            if(Source.GetPose(Time.frameCount, out m_pose))
-            {
-                m_handler.SetHumanPose(ref m_pose);
+                case HumanPoseTransferSourceType.HumanPoseTransfer:
+                    if (Source != null && m_handler != null)
+                    {
+                        if (Source.GetPose(Time.frameCount, out m_pose))
+                        {
+                            m_handler.SetHumanPose(ref m_pose);
+                        }
+                    }
+                    break;
+
+                case HumanPoseTransferSourceType.HumanPoseClip:
+                    if (PoseClip != null)
+                    {
+                        var pose = PoseClip.GetPose();
+                        m_handler.SetHumanPose(ref pose);
+                    }
+                    break;
             }
         }
     }
