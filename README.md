@@ -4,12 +4,13 @@ Unity humanoid utility with bvh importer.
 
 ## License
 
-* [license](./LICENSE)
+* [license](./LICENSE.md)
 
 ## BVH Importer
 
 Drop bvh file to Assets folder.
-Then, AssetPostprocessor import bvh file and create prefab assets includes AnimationClip.
+Then, AssetPostprocessor import bvh file and create prefab includes AnimationClip with Avatar.
+Although avtar creation may fail, in that case you can create it manually later.
 
 ![bvh prefab](doc/bvh_prefab.png)
 
@@ -19,7 +20,7 @@ Instanciate prefab to scene.
 
 That object can play. 
 
-## Create Humanoid avatar from bvh gameobject.
+## Create Humanoid avatar from gameobject hierarchy.
 
 BoneMapping is attached to bvh gameobject.
 Press CreateAvtar button.
