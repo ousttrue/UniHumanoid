@@ -39,6 +39,8 @@ namespace UniHumanoid
             public float Value;
         }
 
+        public Vector3 BodyPosition;
+
         public Muscle[] Muscles;
 
         private void OnEnable()
@@ -71,6 +73,8 @@ namespace UniHumanoid
         private void Update()
         {
             m_handler.GetHumanPose(ref m_pose);
+
+            BodyPosition = m_pose.bodyPosition;
 
             for (int i = 0; i < m_pose.muscles.Length; ++i)
             {
