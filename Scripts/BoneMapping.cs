@@ -14,6 +14,11 @@ namespace UniHumanoid
 
         private void Reset()
         {
+            GetBones();
+        }
+
+        private void GetBones()
+        {
             Bones = new GameObject[(int)HumanBodyBones.LastBone];
 
             var animator = GetComponent<Animator>();
@@ -79,6 +84,15 @@ namespace UniHumanoid
                 .ToDictionary(x => (HumanBodyBones)x.i, x => x.x.transform)
                 ;
             description.SetHumanBones(map);
+        }
+
+        private void Awake()
+        {
+            if (Bones == null
+                || Bones.All(x => x==null))
+            {
+                GetBones();
+            }
         }
     }
 }
