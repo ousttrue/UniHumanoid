@@ -20,7 +20,7 @@ namespace UniHumanoid
             // build hierarchy
             //
             context.Root = new GameObject(Path.GetFileNameWithoutExtension(context.Path));
-            context.Root.AddComponent<Animator>();
+            var animator=context.Root.AddComponent<Animator>();
 
             BuildHierarchy(context.Root.transform, context.Bvh.Root, 1.0f);
 
@@ -65,9 +65,13 @@ namespace UniHumanoid
             context.Avatar = description.CreateAvatar(context.Root.transform);
             context.Avatar.name = "Avatar";
             context.AvatarDescription = description;
+            animator.avatar = context.Avatar;
 
             var humanPoseTransfer = context.Root.AddComponent<HumanPoseTransfer>();
             humanPoseTransfer.Avatar = context.Avatar;
+
+            // create SkinnedMesh for bone visualize
+            //var mesh = SkeletonMeshUtility.CreateRenderer(animator);
         }
 
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)
