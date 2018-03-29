@@ -58,6 +58,13 @@ namespace UniHumanoid
         [SerializeField]
         public HumanPoseClip PoseClip;
 
+        [ContextMenu("Set T-Pose")]
+        void SetTPose()
+        {
+            if (Avatar == null) return;
+            SetTPose(Avatar, transform);
+        }
+
         HumanPoseHandler m_handler;
         private void Awake()
         {
@@ -83,7 +90,7 @@ namespace UniHumanoid
 
         int m_lastFrameCount = -1;
 
-        public bool GetPose(int frameCount, out HumanPose pose)
+        public bool GetPose(int frameCount, ref HumanPose pose)
         {
             if (PoseClip != null)
             {
@@ -116,7 +123,7 @@ namespace UniHumanoid
                 case HumanPoseTransferSourceType.HumanPoseTransfer:
                     if (Source != null && m_handler != null)
                     {
-                        if (Source.GetPose(Time.frameCount, out m_pose))
+                        if (Source.GetPose(Time.frameCount, ref m_pose))
                         {
                             m_handler.SetHumanPose(ref m_pose);
                         }
