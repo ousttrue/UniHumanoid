@@ -179,7 +179,8 @@ namespace UniHumanoid
             renderer.bones = bones.ToArray();
             renderer.rootBone = animator.GetBoneTransform(HumanBodyBones.Hips);
             renderer.sharedMesh = mesh;
-            renderer.localBounds = mesh.bounds;
+            var bounds = new Bounds(Vector3.zero, mesh.bounds.size);
+            renderer.localBounds = bounds;
             return renderer;
         }
     }
