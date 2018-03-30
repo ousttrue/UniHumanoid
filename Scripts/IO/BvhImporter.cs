@@ -71,7 +71,11 @@ namespace UniHumanoid
             humanPoseTransfer.Avatar = context.Avatar;
 
             // create SkinnedMesh for bone visualize
-            //var mesh = SkeletonMeshUtility.CreateRenderer(animator);
+            var renderer = SkeletonMeshUtility.CreateRenderer(animator);
+            context.Material = new Material(Shader.Find("Standard"));
+            renderer.sharedMaterial = context.Material;
+            context.Mesh = renderer.sharedMesh;
+            context.Mesh.name = "box-man";
         }
 
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)

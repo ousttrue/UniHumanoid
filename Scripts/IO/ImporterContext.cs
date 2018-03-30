@@ -33,6 +33,8 @@ namespace UniHumanoid
         public AnimationClip Animation;
         public AvatarDescription AvatarDescription;
         public Avatar Avatar;
+        public Mesh Mesh;
+        public Material Material;
         #endregion
 
         string m_prefabPath;
@@ -92,6 +94,8 @@ namespace UniHumanoid
             if (Animation != null) yield return Animation;
             if (AvatarDescription != null) yield return AvatarDescription;
             if (Avatar != null) yield return Avatar;
+            if (Mesh != null) yield return Mesh;
+            if (Material != null) yield return Material;
         }
 
         public void SaveAsAsset()
