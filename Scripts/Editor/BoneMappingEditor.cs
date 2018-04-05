@@ -160,7 +160,9 @@ animator.GetBoneTransform(x.Head), animator.GetBoneTransform(x.Tail)))
             EditorGUILayout.LabelField("Body and Head", EditorStyles.boldLabel);
             BoneField(HumanBodyBones.Spine, bones);
             BoneField(HumanBodyBones.Chest, bones);
+#if UNITY_5_6_OR_NEWER
             BoneField(HumanBodyBones.UpperChest, bones);
+#endif
             BoneField(HumanBodyBones.Neck, bones);
             BoneField(HumanBodyBones.Head, bones);
             BoneField(HumanBodyBones.Jaw, bones);
