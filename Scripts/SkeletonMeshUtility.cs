@@ -158,7 +158,7 @@ namespace UniHumanoid
 
         public static SkinnedMeshRenderer CreateRenderer(Animator animator)
         {
-            var bodyBones = (HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones));
+            //var bodyBones = (HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones));
             var bones = animator.transform.Traverse().ToList();
 
             var builder = new MeshBuilder();

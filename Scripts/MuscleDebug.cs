@@ -92,10 +92,12 @@ namespace UniHumanoid
         {
             var nameProp = property.FindPropertyRelative("Name");
             var valueProp = property.FindPropertyRelative("Value");
+            /*
             var labl = string.Format("{0}: {1}", 
                 nameProp.stringValue, 
                 valueProp.floatValue
                 );
+                */
             EditorGUI.LabelField(position, nameProp.stringValue, string.Format("{0:0.00}", valueProp.floatValue));
         }
     }
