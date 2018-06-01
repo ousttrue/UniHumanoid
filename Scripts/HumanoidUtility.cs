@@ -45,12 +45,17 @@ namespace UniHumanoid
     {
         static Transform GetLeftLeg(Transform[] joints)
         {
-            Transform t = joints[0];
-            for (int i = 1; i < joints.Length; ++i)
+            Transform t = null;
+            var value = 0.0f;
+            foreach (var joint in joints)
             {
-                if (joints[i].transform.position.x < t.position.x)
+                if (t == null 
+                    || joint.transform.position.x < value
+                    || joint.GetChild(0).position.x < value
+                    )
                 {
-                    t = joints[i];
+                    t = joint;
+                    value = joint.GetChild(0).position.x;
                 }
             }
             return t;
@@ -58,12 +63,17 @@ namespace UniHumanoid
 
         static Transform GetRightLeg(Transform[] joints)
         {
-            Transform t = joints[0];
-            for (int i = 1; i < joints.Length; ++i)
+            Transform t = null;
+            var value = 0.0f;
+            foreach (var joint in joints)
             {
-                if (joints[i].transform.position.x > t.position.x)
+                if (t == null 
+                    || joint.transform.position.x > value
+                    || joint.GetChild(0).position.x > value
+                    )
                 {
-                    t = joints[i];
+                    t = joint;
+                    value = joint.GetChild(0).position.x;
                 }
             }
             return t;
@@ -71,12 +81,14 @@ namespace UniHumanoid
 
         static Transform GetSpine(Transform[] joints)
         {
-            Transform t = joints[0];
-            for (int i = 1; i < joints.Length; ++i)
+            Transform t = null;
+            foreach (var joint in joints)
             {
-                if (joints[i].transform.position.y > t.position.y)
+                if ((t==null || joint.transform.position.y > t.position.y)
+                    && !joint.name.ToLower().Contains("hip")
+                    )
                 {
-                    t = joints[i];
+                    t = joint;
                 }
             }
             return t;
@@ -92,6 +104,12 @@ namespace UniHumanoid
                     return current;
                 }
 
+                if (current.childCount == 0)
+                {
+                    Debug.LogWarningFormat("chest not found: {0}", spine);
+                    return null;
+                }
+
                 current = current.GetChild(0);
             }
             return null;
@@ -105,7 +123,9 @@ namespace UniHumanoid
             var value = values[0];
             for (int i = 1; i < joints.Length; ++i)
             {
-                if (values[i] > value)
+                if (values[i] > value
+                    || joints[i].name.ToLower().Contains("left")
+                    )
                 {
                     value = values[i];
                     current = joints[i];
@@ -122,7 +142,8 @@ namespace UniHumanoid
             var value = values[0];
             for (int i = 1; i < joints.Length; ++i)
             {
-                if (values[i] > value)
+                if (values[i] > value
+                    || joints[i].name.ToLower().Contains("right"))
                 {
                     value = values[i];
                     current = joints[i];
@@ -180,10 +201,21 @@ namespace UniHumanoid
 
             yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Hips, hips);
 
+            Func<Transform, bool> SkipBetweenHipsAndUpperLeg = x =>
+            {
+                // skip bone between hips and upperLegs
+                var lowerName = x.name.ToLower();
+                return !lowerName.Contains("buttock")
+                && !lowerName.Contains("hip")
+                ;
+            };
+
             //
             // left leg
             //
-            var leftLeg = GetLeftLeg(hipsChildren).Traverse().Where(x => !x.name.ToLower().Contains("buttock")).ToArray();
+            var leftLeg = GetLeftLeg(hipsChildren).Traverse()
+                .Where(SkipBetweenHipsAndUpperLeg)
+                .ToArray();
             {
                 if (leftLeg.Length == 3)
                 {
@@ -207,7 +239,9 @@ namespace UniHumanoid
             //
             // right leg
             //
-            var rightLeg = GetRightLeg(hipsChildren).Traverse().Where(x => !x.name.ToLower().Contains("buttock")).ToArray();
+            var rightLeg = GetRightLeg(hipsChildren).Traverse()
+                .Where(SkipBetweenHipsAndUpperLeg)
+                .ToArray();
             {
                 if (rightLeg.Length == 3)
                 {
