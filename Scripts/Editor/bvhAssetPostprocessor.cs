@@ -26,8 +26,9 @@ namespace UniHumanoid
                         context.SaveAsAsset();
                         context.Destroy(false);
                     }
-                    catch(Exception)
+                    catch(Exception ex)
                     {
+                        Debug.LogError(ex);
                         context.Destroy(true);
                     }
                 }
