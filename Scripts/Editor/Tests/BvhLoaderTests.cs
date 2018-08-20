@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using System.Linq;
 using UnityEngine;
+
 
 namespace UniHumanoid
 {
@@ -129,10 +129,32 @@ ROOT Hips
             var skeleton = detector.Detect(bvh);
 
             Assert.AreEqual(0, skeleton.GetBoneIndex(HumanBodyBones.Hips));
+
             Assert.AreEqual("Hips", skeleton.GetBoneName(HumanBodyBones.Hips));
+            Assert.IsNull(skeleton.GetBoneName(HumanBodyBones.Spine));
             Assert.AreEqual("Chest", skeleton.GetBoneName(HumanBodyBones.Chest));
-            //Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
-            //Assert.AreEqual("Head", skeleton.GetBoneName(HumanBodyBones.Head));
+            Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
+            Assert.AreEqual("Head", skeleton.GetBoneName(HumanBodyBones.Head));
+
+            Assert.AreEqual("LeftCollar", skeleton.GetBoneName(HumanBodyBones.LeftShoulder));
+            Assert.AreEqual("LeftShoulder", skeleton.GetBoneName(HumanBodyBones.LeftUpperArm));
+            Assert.AreEqual("LeftElbow", skeleton.GetBoneName(HumanBodyBones.LeftLowerArm));
+            Assert.AreEqual("LeftWrist", skeleton.GetBoneName(HumanBodyBones.LeftHand));
+
+            Assert.AreEqual("RightCollar", skeleton.GetBoneName(HumanBodyBones.RightShoulder));
+            Assert.AreEqual("RightShoulder", skeleton.GetBoneName(HumanBodyBones.RightUpperArm));
+            Assert.AreEqual("RightElbow", skeleton.GetBoneName(HumanBodyBones.RightLowerArm));
+            Assert.AreEqual("RightWrist", skeleton.GetBoneName(HumanBodyBones.RightHand));
+
+            Assert.AreEqual("LeftHip", skeleton.GetBoneName(HumanBodyBones.LeftUpperLeg));
+            Assert.AreEqual("LeftKnee", skeleton.GetBoneName(HumanBodyBones.LeftLowerLeg));
+            Assert.AreEqual("LeftAnkle", skeleton.GetBoneName(HumanBodyBones.LeftFoot));
+            Assert.IsNull(skeleton.GetBoneName(HumanBodyBones.LeftToes));
+
+            Assert.AreEqual("RightHip", skeleton.GetBoneName(HumanBodyBones.RightUpperLeg));
+            Assert.AreEqual("RightKnee", skeleton.GetBoneName(HumanBodyBones.RightLowerLeg));
+            Assert.AreEqual("RightAnkle", skeleton.GetBoneName(HumanBodyBones.RightFoot));
+            Assert.IsNull(skeleton.GetBoneName(HumanBodyBones.RightToes));
         }
     }
 }
