@@ -339,24 +339,24 @@ namespace UniHumanoid
                     return null;
                 }
 
-                if (r.ReadLine() != "MOTION")
+                var frames = 0;
+                var frameTime = 0.0f;
+                if (r.ReadLine() == "MOTION")
                 {
-                    throw new BvhException("MOTION is not found");
-                }
+                    var frameSplited = r.ReadLine().Split(':');
+                    if (frameSplited[0] != "Frames")
+                    {
+                        throw new BvhException("Frames is not found");
+                    }
+                    frames = int.Parse(frameSplited[1]);
 
-                var frameSplited=r.ReadLine().Split(':');
-                if(frameSplited[0]!= "Frames")
-                {
-                    throw new BvhException("Frames is not found");
+                    var frameTimeSplited = r.ReadLine().Split(':');
+                    if (frameTimeSplited[0] != "Frame Time")
+                    {
+                        throw new BvhException("Frame Time is not found");
+                    }
+                    frameTime = float.Parse(frameTimeSplited[1]);
                 }
-                var frames = int.Parse(frameSplited[1]);
-
-                var frameTimeSplited = r.ReadLine().Split(':');
-                if(frameTimeSplited[0]!= "Frame Time")
-                {
-                    throw new BvhException("Frame Time is not found");
-                }
-                var frameTime = float.Parse(frameTimeSplited[1]);
 
                 var bvh = new Bvh(root, frames, frameTime);
 
