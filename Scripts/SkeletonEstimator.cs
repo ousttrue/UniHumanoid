@@ -6,304 +6,6 @@ using UnityEngine;
 
 namespace UniHumanoid
 {
-    /*
-public static class HumanoidUtility
-{
-    static Transform GetLeftLeg(Transform[] joints)
-    {
-        Transform t = null;
-        var value = 0.0f;
-        foreach (var joint in joints)
-        {
-            if (t == null 
-                || joint.transform.position.x < value
-                || joint.GetChild(0).position.x < value
-                )
-            {
-                t = joint;
-                value = joint.GetChild(0).position.x;
-            }
-        }
-        return t;
-    }
-
-    static Transform GetRightLeg(Transform[] joints)
-    {
-        Transform t = null;
-        var value = 0.0f;
-        foreach (var joint in joints)
-        {
-            if (t == null 
-                || joint.transform.position.x > value
-                || joint.GetChild(0).position.x > value
-                )
-            {
-                t = joint;
-                value = joint.GetChild(0).position.x;
-            }
-        }
-        return t;
-    }
-
-    static Transform GetSpine(Transform[] joints)
-    {
-        Transform t = null;
-        foreach (var joint in joints)
-        {
-            if ((t==null || joint.transform.position.y > t.position.y)
-                && !joint.name.ToLower().Contains("hip")
-                )
-            {
-                t = joint;
-            }
-        }
-        return t;
-    }
-
-    static Transform GetChest(Transform spine)
-    {
-        var current = spine;
-        while (current != null)
-        {
-            if (current.childCount >= 3)
-            {
-                return current;
-            }
-
-            if (current.childCount == 0)
-            {
-                Debug.LogWarningFormat("chest not found: {0}", spine);
-                return null;
-            }
-
-            current = current.GetChild(0);
-        }
-        return null;
-    }
-
-    static Transform GetLeftArm(Transform chest, Transform[] joints, Vector3 leftDir)
-    {
-        var values = joints.Select(x => Vector3.Dot((x.position - chest.position).normalized, leftDir)).ToArray();
-
-        var current = joints[0];
-        var value = values[0];
-        for (int i = 1; i < joints.Length; ++i)
-        {
-            if (values[i] > value
-                || joints[i].name.ToLower().Contains("left")
-                )
-            {
-                value = values[i];
-                current = joints[i];
-            }
-        }
-        return current;
-    }
-
-    static Transform GetRightArm(Transform chest, Transform[] joints, Vector3 rightDir)
-    {
-        var values = joints.Select(x => Vector3.Dot((x.position - chest.position).normalized, rightDir)).ToArray();
-
-        var current = joints[0];
-        var value = values[0];
-        for (int i = 1; i < joints.Length; ++i)
-        {
-            if (values[i] > value
-                || joints[i].name.ToLower().Contains("right"))
-            {
-                value = values[i];
-                current = joints[i];
-            }
-        }
-        return current;
-    }
-
-    static Transform GetNeck(Transform[] joints)
-    {
-        Transform t = joints[0];
-        for (int i = 1; i < joints.Length; ++i)
-        {
-            if (joints[i].transform.position.y > t.position.y)
-            {
-                t = joints[i];
-            }
-        }
-        return t;
-    }
-
-    public static IEnumerable<KeyValuePair<HumanBodyBones, Transform>> TraverseSkeleton(Transform root, Transform[] joints)
-    {
-        var rootJoints = joints.Where(x => !joints.Contains(x.parent)).ToArray();
-
-        if (rootJoints.Length != 1)
-        {
-            yield break;
-        }
-
-        var hips = rootJoints[0];
-        if (hips.childCount < 3)
-        {
-            yield break;
-        }
-
-        var hipsChildren = hips.GetChildren().ToArray();
-
-        var spine = GetSpine(hipsChildren);
-
-        var chest = GetChest(spine);
-        var chestChildren = chest.GetChildren().ToArray();
-
-        var neck = GetNeck(chestChildren);
-        Transform head = null;
-        if (neck.childCount == 0)
-        {
-            head = neck;
-            neck = null;
-        }
-        else
-        {
-            head = neck.GetChild(0);
-        }
-
-        yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Hips, hips);
-
-        Func<Transform, bool> SkipBetweenHipsAndUpperLeg = x =>
-        {
-            // skip bone between hips and upperLegs
-            var lowerName = x.name.ToLower();
-            return !lowerName.Contains("buttock")
-            && !lowerName.Contains("hip")
-            ;
-        };
-
-        //
-        // left leg
-        //
-        var leftLeg = GetLeftLeg(hipsChildren).Traverse()
-            .Where(SkipBetweenHipsAndUpperLeg)
-            .ToArray();
-        {
-            if (leftLeg.Length == 3)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperLeg, leftLeg[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerLeg, leftLeg[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftFoot, leftLeg[2]);
-            }
-            else if (leftLeg.Length == 4)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperLeg, leftLeg[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerLeg, leftLeg[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftFoot, leftLeg[2]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftToes, leftLeg[3]);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        //
-        // right leg
-        //
-        var rightLeg = GetRightLeg(hipsChildren).Traverse()
-            .Where(SkipBetweenHipsAndUpperLeg)
-            .ToArray();
-        {
-            if (rightLeg.Length == 3)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperLeg, rightLeg[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerLeg, rightLeg[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightFoot, rightLeg[2]);
-            }
-            else if (rightLeg.Length == 4)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperLeg, rightLeg[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerLeg, rightLeg[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightFoot, rightLeg[2]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightToes, rightLeg[3]);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Spine, spine);
-        if (chest != spine)
-        {
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Chest, chest);
-        }
-        if (neck != null)
-        {
-            yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Neck, neck);
-        }
-        yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.Head, head);
-
-        var rightDir = (rightLeg[0].position - leftLeg[0].position).normalized;
-
-        //
-        // left Arm
-        //
-        {
-            var leftArm = GetLeftArm(chest, chestChildren, -rightDir).Traverse().ToArray();
-
-            if (leftArm.Length == 2)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[1]);
-            }
-            else if (leftArm.Length == 3)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftHand, leftArm[2]);
-            }
-            else if (leftArm.Length >= 4)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftShoulder, leftArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftUpperArm, leftArm[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftLowerArm, leftArm[2]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.LeftHand, leftArm[3]);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        //
-        // right Arm
-        //
-        {
-            var rightArm = GetRightArm(chest, chestChildren, rightDir).Traverse().ToArray();
-
-            if (rightArm.Length == 2)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[1]);
-            }
-            else if (rightArm.Length == 3)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightHand, rightArm[2]);
-            }
-            else if (rightArm.Length >= 4)
-            {
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightShoulder, rightArm[0]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightUpperArm, rightArm[1]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightLowerArm, rightArm[2]);
-                yield return new KeyValuePair<HumanBodyBones, Transform>(HumanBodyBones.RightHand, rightArm[3]);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-}
-    */
-
     public interface IBone
     {
         string Name { get; }
@@ -485,9 +187,9 @@ public static class HumanoidUtility
         static void GetSpineAndHips(IBone hips, out IBone spine, out IBone leg_L, out IBone leg_R)
         {
             if (hips.Children.Count != 3) throw new System.Exception("Hips require 3 children");
-            spine = SelectBone((l, r) => l.SkeletonLoacalPosition.y > r.SkeletonLoacalPosition.y ? l : r, hips.Children);
-            leg_L = SelectBone((l, r) => l.SkeletonLoacalPosition.x < r.SkeletonLoacalPosition.x ? l : r, hips.Children);
-            leg_R = SelectBone((l, r) => l.SkeletonLoacalPosition.x > r.SkeletonLoacalPosition.x ? l : r, hips.Children);
+            spine = SelectBone((l, r) => l.CenterOfDescendant().y > r.CenterOfDescendant().y ? l : r, hips.Children);
+            leg_L = SelectBone((l, r) => l.CenterOfDescendant().x < r.CenterOfDescendant().x ? l : r, hips.Children);
+            leg_R = SelectBone((l, r) => l.CenterOfDescendant().x > r.CenterOfDescendant().x ? l : r, hips.Children);
         }
 
         static void GetNeckAndArms(IBone chest, out IBone neck, out IBone arm_L, out IBone arm_R)
@@ -557,10 +259,10 @@ public static class HumanoidUtility
                 default:
                     return new Leg
                     {
-                        UpperLeg = bones[0],
-                        LowerLeg = bones[1],
-                        Foot = bones[2],
-                        Toes = bones[3],
+                        UpperLeg = bones[bones.Length - 4],
+                        LowerLeg = bones[bones.Length - 3],
+                        Foot = bones[bones.Length - 2],
+                        Toes = bones[bones.Length - 1],
                     };
             }
         }
@@ -589,7 +291,7 @@ public static class HumanoidUtility
             var armLeft = GetArm(shoulder_L);
             var armRight = GetArm(shoulder_R);
 
-            var head = neck.Children.First();
+            var neckToHead = neck.Traverse().ToArray();
 
             //
             //  set result
@@ -624,8 +326,25 @@ public static class HumanoidUtility
                     break;
             }
 
-            skeleton.Set(HumanBodyBones.Neck, bones, neck);
-            skeleton.Set(HumanBodyBones.Head, bones, head);
+            switch (neckToHead.Length)
+            {
+                case 0:
+                    throw new Exception();
+
+                case 1:
+                    skeleton.Set(HumanBodyBones.Head, bones, neckToHead[0]);
+                    break;
+
+                case 2:
+                    skeleton.Set(HumanBodyBones.Neck, bones, neckToHead[0]);
+                    skeleton.Set(HumanBodyBones.Head, bones, neckToHead[1]);
+                    break;
+
+                default:
+                    skeleton.Set(HumanBodyBones.Neck, bones, neckToHead[0]);
+                    skeleton.Set(HumanBodyBones.Head, bones, neckToHead.Last());
+                    break;
+            }
 
             skeleton.Set(HumanBodyBones.LeftUpperLeg, bones, legLeft.UpperLeg);
             skeleton.Set(HumanBodyBones.LeftLowerLeg, bones, legLeft.LowerLeg);
