@@ -313,16 +313,22 @@ namespace UniHumanoid
                     skeleton.Set(HumanBodyBones.Chest, bones, spineToChest[1]);
                     break;
 
+#if UNITY_5_6_OR_NEWER
                 case 3:
                     skeleton.Set(HumanBodyBones.Spine, bones, spineToChest[0]);
                     skeleton.Set(HumanBodyBones.Chest, bones, spineToChest[1]);
                     skeleton.Set(HumanBodyBones.UpperChest, bones, spineToChest[2]);
                     break;
+#endif
 
                 default:
                     skeleton.Set(HumanBodyBones.Spine, bones, spineToChest[0]);
+#if UNITY_5_6_OR_NEWER
                     skeleton.Set(HumanBodyBones.Chest, bones, spineToChest[1]);
                     skeleton.Set(HumanBodyBones.UpperChest, bones, spineToChest.Last());
+#else
+                    skeleton.Set(HumanBodyBones.Chest, bones, spineToChest.Last());
+#endif
                     break;
             }
 

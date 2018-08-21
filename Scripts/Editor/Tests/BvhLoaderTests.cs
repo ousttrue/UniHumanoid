@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UniHumanoid
 {
+#if UNITY_5_6_OR_NEWER
     public class BvhLoaderTests
     {
         #region LOUICE
@@ -361,8 +362,9 @@ ROOT Hips
             Assert.AreEqual("Hips", skeleton.GetBoneName(HumanBodyBones.Hips));
             Assert.AreEqual("LowerBack", skeleton.GetBoneName(HumanBodyBones.Spine));
             Assert.AreEqual("Spine", skeleton.GetBoneName(HumanBodyBones.Chest));
+#if UNITY_5_6_OR_NEWER
             Assert.AreEqual("Spine1", skeleton.GetBoneName(HumanBodyBones.UpperChest));
-
+#endif
             Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
             Assert.AreEqual("Head", skeleton.GetBoneName(HumanBodyBones.Head));
 
@@ -529,6 +531,7 @@ ROOT Hips
             Assert.AreEqual("Hips", skeleton.GetBoneName(HumanBodyBones.Hips));
             Assert.AreEqual("Spine", skeleton.GetBoneName(HumanBodyBones.Spine));
             Assert.AreEqual("Spine1", skeleton.GetBoneName(HumanBodyBones.Chest));
+
             Assert.AreEqual(null, skeleton.GetBoneName(HumanBodyBones.UpperChest));
 
             Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
@@ -735,4 +738,5 @@ ROOT Hips
         }
         #endregion
     }
+#endif
 }
