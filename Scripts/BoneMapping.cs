@@ -51,11 +51,16 @@ namespace UniHumanoid
                 return;
             }
 
-            var bones = HumanoidUtility.TraverseSkeleton(hips.transform,
-                hips.transform.Traverse().ToArray()).ToArray();
-            foreach (var x in bones)
+            var estimater = new BvhSkeletonEstimator();
+            var skeleton = estimater.Detect(hips.transform);
+            var bones = hips.transform.Traverse().ToArray();
+            for (int i = 0; i < (int)HumanBodyBones.LastBone; ++i)
             {
-                Bones[(int)x.Key] = x.Value.gameObject;
+                var index = skeleton.GetBoneIndex((HumanBodyBones)i);
+                if (index >= 0)
+                {
+                    Bones[i] = bones[index].gameObject;
+                }
             }
         }
 

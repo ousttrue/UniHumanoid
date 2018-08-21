@@ -131,8 +131,8 @@ ROOT Hips
             Assert.AreEqual(0, skeleton.GetBoneIndex(HumanBodyBones.Hips));
 
             Assert.AreEqual("Hips", skeleton.GetBoneName(HumanBodyBones.Hips));
-            Assert.IsNull(skeleton.GetBoneName(HumanBodyBones.Spine));
-            Assert.AreEqual("Chest", skeleton.GetBoneName(HumanBodyBones.Chest));
+            Assert.AreEqual("Chest", skeleton.GetBoneName(HumanBodyBones.Spine));
+            Assert.IsNull(skeleton.GetBoneName(HumanBodyBones.Chest));
             Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
             Assert.AreEqual("Head", skeleton.GetBoneName(HumanBodyBones.Head));
 
