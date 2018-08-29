@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 using UnityEngine;
-
+using System.Linq;
+using System;
 
 namespace UniHumanoid
 {
@@ -20,34 +21,40 @@ namespace UniHumanoid
             // build hierarchy
             //
             context.Root = new GameObject(Path.GetFileNameWithoutExtension(context.Path));
-            var animator=context.Root.AddComponent<Animator>();
 
             BuildHierarchy(context.Root.transform, context.Bvh.Root, 1.0f);
 
-            var minY = 0.0f;
-            foreach (var x in context.Root.transform.Traverse())
-            {
-                if (x.position.y < minY)
-                {
-                    minY = x.position.y;
-                }
-            }
-
-            var toMeter = 1.0f / (-minY);
-            Debug.LogFormat("minY: {0} {1}", minY, toMeter);
-            foreach (var x in context.Root.transform.Traverse())
-            {
-                x.localPosition *= toMeter;
-            }
-
-            // foot height to 0
             var hips = context.Root.transform.GetChild(0);
-            hips.position = new Vector3(0, -minY * toMeter, 0);
+            var estimater = new BvhSkeletonEstimator();
+            var skeleton = estimater.Detect(hips.transform);
+            var description = AvatarDescription.Create();
+            var values= ((HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones)));
+            description.SetHumanBones(skeleton.ToDictionary(hips.Traverse().ToArray()));
+
+            context.Avatar = description.CreateAvatar(context.Root.transform);
+            context.Avatar.name = "Avatar";
+            context.AvatarDescription = description;
+            var animator = context.Root.AddComponent<Animator>();
+            animator.avatar = context.Avatar;
+
+            float scaling = 1.0f;
+            {
+                var foot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+                var hipHeight = hips.position.y - foot.position.y;
+                // hips height to a meter
+                scaling = 1.0f / hipHeight;
+                foreach (var x in context.Root.transform.Traverse())
+                {
+                    x.localPosition *= scaling;
+                }
+
+                hips.position = new Vector3(0, hipHeight * scaling, 0); // foot to ground
+            }
 
             //
             // create AnimationClip
             //
-            context.Animation = BvhAnimation.CreateAnimationClip(context.Bvh, toMeter);
+            context.Animation = BvhAnimation.CreateAnimationClip(context.Bvh, scaling);
             context.Animation.name = context.Root.name;
             context.Animation.legacy = true;
             context.Animation.wrapMode = WrapMode.Loop;
@@ -56,16 +63,6 @@ namespace UniHumanoid
             animation.AddClip(context.Animation, context.Animation.name);
             animation.clip = context.Animation;
             animation.Play();
-
-            var boneMapping = context.Root.AddComponent<BoneMapping>();
-            boneMapping.Bones[(int)HumanBodyBones.Hips] = hips.gameObject;
-            boneMapping.GuessBoneMapping();
-            var description = AvatarDescription.Create();
-            BoneMapping.SetBonesToDescription(boneMapping, description);
-            context.Avatar = description.CreateAvatar(context.Root.transform);
-            context.Avatar.name = "Avatar";
-            context.AvatarDescription = description;
-            animator.avatar = context.Avatar;
 
             var humanPoseTransfer = context.Root.AddComponent<HumanPoseTransfer>();
             humanPoseTransfer.Avatar = context.Avatar;
@@ -76,6 +73,8 @@ namespace UniHumanoid
             renderer.sharedMaterial = context.Material;
             context.Mesh = renderer.sharedMesh;
             context.Mesh.name = "box-man";
+
+            context.Root.AddComponent<BoneMapping>();
         }
 
         static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)

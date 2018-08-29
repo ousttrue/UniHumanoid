@@ -145,12 +145,24 @@ namespace UniHumanoid
 
         public int GetBoneIndex(HumanBodyBones bone)
         {
+            var index = (int)bone;
+            if (index < 0) return -1;
+            if (index >= _boneIndices.Length) return - 1;
             return _boneIndices[(int)bone];
         }
 
         public string GetBoneName(HumanBodyBones bone)
         {
             return _boneNames[(int)bone];
+        }
+
+        public Dictionary<HumanBodyBones, T> ToDictionary<T>(T[] values)
+        {
+            var self = this;
+            return ((HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones)))
+                .Where(x => self.GetBoneIndex(x) >= 0)
+                .ToDictionary(x => x, x => values[self.GetBoneIndex(x)])
+                ;
         }
     }
 
