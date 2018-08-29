@@ -43,7 +43,7 @@ namespace UniHumanoid
                     );
             }
 
-            static void AddCurve(Bvh bvh, AnimationClip clip, ChannelCurve ch, float toMeter)
+            static void AddCurve(Bvh bvh, AnimationClip clip, ChannelCurve ch, float scaling, float yDelta=0)
             {
                 if (ch == null) return;
                 var pathWithProp = default(Bvh.PathWithProperty);
@@ -52,17 +52,17 @@ namespace UniHumanoid
                 for (int i = 0; i < bvh.FrameCount; ++i)
                 {
                     var time = (float)(i * bvh.FrameTime.TotalSeconds);
-                    var value = ch.Keys[i] * toMeter;
+                    var value = ch.Keys[i] * scaling + yDelta;
                     curve.AddKey(time, value);
                 }
                 clip.SetCurve(pathWithProp.Path, typeof(Transform), pathWithProp.Property, curve);
             }
 
-            public void AddCurves(Bvh bvh, AnimationClip clip, float toMeter)
+            public void AddCurves(Bvh bvh, AnimationClip clip, float scaling, float yDelta)
             {
-                AddCurve(bvh, clip, PositionX, -toMeter);
-                AddCurve(bvh, clip, PositionY, toMeter);
-                AddCurve(bvh, clip, PositionZ, toMeter);
+                AddCurve(bvh, clip, PositionX, -scaling);
+                AddCurve(bvh, clip, PositionY, scaling, yDelta);
+                AddCurve(bvh, clip, PositionZ, scaling);
 
                 var pathWithProp = default(Bvh.PathWithProperty);
                 bvh.TryGetPathWithPropertyFromChannel(RotationX, out pathWithProp);
@@ -88,7 +88,7 @@ namespace UniHumanoid
             }
         }
 
-        public static AnimationClip CreateAnimationClip(Bvh bvh, float toMeter)
+        public static AnimationClip CreateAnimationClip(Bvh bvh, float scaling, string hipsName, float yDelta)
         {
             var clip = new AnimationClip();
             clip.legacy = true;
@@ -119,7 +119,8 @@ namespace UniHumanoid
 
             foreach (var set in curveMap)
             {
-                set.Value.AddCurves(bvh, clip, toMeter);
+                set.Value.AddCurves(bvh, clip, scaling, 
+                    set.Key.Name == hipsName ? yDelta : 0);
             }
 
             clip.EnsureQuaternionContinuity();

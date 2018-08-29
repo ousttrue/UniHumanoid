@@ -37,6 +37,7 @@ namespace UniHumanoid
             var animator = context.Root.AddComponent<Animator>();
             animator.avatar = context.Avatar;
 
+            float yDelta = 0;
             float scaling = 1.0f;
             {
                 var foot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
@@ -48,13 +49,16 @@ namespace UniHumanoid
                     x.localPosition *= scaling;
                 }
 
-                hips.position = new Vector3(0, hipHeight * scaling, 0); // foot to ground
+                var scaledHeight = hipHeight * scaling;
+                yDelta = scaledHeight - hips.position.y;
+                Debug.LogFormat("yDelta: {0}", yDelta);
+                hips.position = new Vector3(0, scaledHeight, 0); // foot to ground
             }
 
             //
             // create AnimationClip
             //
-            context.Animation = BvhAnimation.CreateAnimationClip(context.Bvh, scaling);
+            context.Animation = BvhAnimation.CreateAnimationClip(context.Bvh, scaling, skeleton.GetBoneName(HumanBodyBones.Hips), yDelta);
             context.Animation.name = context.Root.name;
             context.Animation.legacy = true;
             context.Animation.wrapMode = WrapMode.Loop;
