@@ -50,7 +50,7 @@ namespace UniHumanoid
                 }
 
                 var scaledHeight = hipHeight * scaling;
-                yDelta = scaledHeight - hips.position.y;
+                yDelta = hips.position.y - scaledHeight;
                 Debug.LogFormat("yDelta: {0}", yDelta);
                 hips.position = new Vector3(0, scaledHeight, 0); // foot to ground
             }
