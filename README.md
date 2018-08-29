@@ -12,7 +12,7 @@ Unity humanoid utility with bvh importer.
 * http://mocapdata.com/
 * http://www.thetrailerspark.com/download/Mocap/Packed/EYES-JAPAN/BVH/
 
-## BVH Importer
+## BVH Asset Importer
 
 Drop bvh file to Assets folder.
 Then, AssetPostprocessor import bvh file.
@@ -29,6 +29,18 @@ Instanciate prefab to scene.
 ![bvh gameobject](doc/mesh.png)
 
 That object can play. 
+
+
+## BVH Runtime Importer
+
+```cs
+var context = new UniHumanoid.ImporterContext
+{
+    Path = path
+};
+UniHumanoid.BvhImporter.Import(context);
+GameObject root = context.Root;
+```
 
 ## Transfer humanoid pose to other humanoid
 
