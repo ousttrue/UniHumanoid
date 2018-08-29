@@ -252,7 +252,7 @@ namespace UniHumanoid
 
         Leg GetLeg(IBone leg)
         {
-            var bones = leg.Traverse().ToArray();
+            var bones = leg.Traverse().Where(x => !x.Name.ToLower().Contains("buttock")).ToArray();
             switch (bones.Length)
             {
                 case 0:
@@ -361,7 +361,7 @@ namespace UniHumanoid
 
                 default:
                     skeleton.Set(HumanBodyBones.Neck, bones, neckToHead[0]);
-                    skeleton.Set(HumanBodyBones.Head, bones, neckToHead.Last());
+                    skeleton.Set(HumanBodyBones.Head, bones, neckToHead.Where(x => x.Parent.Children.Count==1).Last());
                     break;
             }
 

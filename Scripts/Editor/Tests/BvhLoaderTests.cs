@@ -890,7 +890,6 @@ ROOT Hips
             Assert.AreEqual("RightKnee", skeleton.GetBoneName(HumanBodyBones.RightLowerLeg));
             Assert.AreEqual("RightAnkle", skeleton.GetBoneName(HumanBodyBones.RightFoot));
         }
-        #endregion
 
         const string mocapdatacom_hierarchy_2 = @"HIERARCHY
 ROOT reference
@@ -1015,7 +1014,6 @@ ROOT reference
 }
 ";
 
-
         [Test]
         public void GuessBoneMapping_mocapdatacom_2()
         {
@@ -1048,6 +1046,315 @@ ROOT reference
             Assert.AreEqual("RightKnee", skeleton.GetBoneName(HumanBodyBones.RightLowerLeg));
             Assert.AreEqual("RightAnkle", skeleton.GetBoneName(HumanBodyBones.RightFoot));
         }
+        #endregion
+
+        #region daz_friendry
+        const string daz_friendry_herarchy = @"HIERARCHY
+ROOT hip
+{
+  OFFSET 0 0 0
+  CHANNELS 6 Xposition Yposition Zposition Zrotation Yrotation Xrotation
+  JOINT abdomen
+  {
+    OFFSET 0 20.6881 -0.73152
+    CHANNELS 3 Zrotation Xrotation Yrotation
+    JOINT chest
+    {
+      OFFSET 0 11.7043 -0.48768
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT neck
+      {
+        OFFSET 0 22.1894 -2.19456
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT head
+        {
+          OFFSET -0.24384 7.07133 1.2192
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT leftEye
+          {
+            OFFSET 4.14528 8.04674 8.04672
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            End Site
+            {
+              OFFSET 1 0 0
+            }
+          }
+          JOINT rightEye
+          {
+            OFFSET -3.6576 8.04674 8.04672
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            End Site
+            {
+              OFFSET 1 0 0
+            }
+          }
+        }
+      }
+      JOINT rCollar
+      {
+        OFFSET -2.68224 19.2634 -4.8768
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT rShldr
+        {
+          OFFSET -8.77824 -1.95073 1.46304
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT rForeArm
+          {
+            OFFSET -28.1742 -1.7115 0.48768
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            JOINT rHand
+            {
+              OFFSET -22.5879 0.773209 7.07136
+              CHANNELS 3 Zrotation Xrotation Yrotation
+              JOINT rThumb1
+              {
+                OFFSET -1.2192 -0.487915 3.41376
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT rThumb2
+                {
+                  OFFSET -3.37035 -0.52449 3.41376
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET -1.78271 -1.18214 1.43049
+                  }
+                }
+              }
+              JOINT rIndex1
+              {
+                OFFSET -7.75947 0.938293 5.60832
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT rIndex2
+                {
+                  OFFSET -2.54057 -0.884171 1.56538
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET -1.62519 -0.234802 1.16502
+                  }
+                }
+              }
+              JOINT rMid1
+              {
+                OFFSET -8.24714 1.18213 3.41376
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT rMid2
+                {
+                  OFFSET -3.10165 -0.590103 1.0647
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET -2.48547 -0.328903 0.83742
+                  }
+                }
+              }
+              JOINT rRing1
+              {
+                OFFSET -8.82822 0.546677 1.51678
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT rRing2
+                {
+                  OFFSET -2.60934 -0.819778 -0.0198488
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET -2.33842 -0.294052 0.168128
+                  }
+                }
+              }
+              JOINT rPinky1
+              {
+                OFFSET -8.27202 -0.0477905 -0.4584
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT rPinky2
+                {
+                  OFFSET -1.82734 -0.647385 -0.700984
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET -1.69225 -0.51767 -0.607171
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      JOINT lCollar
+      {
+        OFFSET 2.68224 19.2634 -4.8768
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT lShldr
+        {
+          OFFSET 8.77824 -1.95073 1.46304
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT lForeArm
+          {
+            OFFSET 28.1742 -1.7115 0.48768
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            JOINT lHand
+            {
+              OFFSET 22.5879 0.773209 7.07136
+              CHANNELS 3 Zrotation Xrotation Yrotation
+              JOINT lThumb1
+              {
+                OFFSET 1.2192 -0.487915 3.41376
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT lThumb2
+                {
+                  OFFSET 3.37035 -0.52449 3.41376
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET 1.78271 -1.18214 1.43049
+                  }
+                }
+              }
+              JOINT lIndex1
+              {
+                OFFSET 7.75947 0.938293 5.60832
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT lIndex2
+                {
+                  OFFSET 2.54057 -0.884171 1.56538
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET 1.62519 -0.234802 1.16502
+                  }
+                }
+              }
+              JOINT lMid1
+              {
+                OFFSET 8.24714 1.18213 3.41376
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT lMid2
+                {
+                  OFFSET 3.10165 -0.590103 1.0647
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET 2.48547 -0.328903 0.83742
+                  }
+                }
+              }
+              JOINT lRing1
+              {
+                OFFSET 8.82822 0.546677 1.51678
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT lRing2
+                {
+                  OFFSET 2.60934 -0.819778 -0.0198488
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET 2.33842 -0.294052 0.168128
+                  }
+                }
+              }
+              JOINT lPinky1
+              {
+                OFFSET 8.27202 -0.0477905 -0.4584
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                JOINT lPinky2
+                {
+                  OFFSET 1.82734 -0.647385 -0.700984
+                  CHANNELS 3 Zrotation Xrotation Yrotation
+                  End Site
+                  {
+                    OFFSET 1.69225 -0.51767 -0.607171
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  JOINT rButtock
+  {
+    OFFSET -8.77824 4.35084 1.2192
+    CHANNELS 3 Zrotation Xrotation Yrotation
+    JOINT rThigh
+    {
+      OFFSET 0 -1.70687 -2.19456
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT rShin
+      {
+        OFFSET 0 -36.8199 0.73152
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT rFoot
+        {
+          OFFSET 0.73152 -45.1104 -5.12064
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          End Site
+          {
+            OFFSET -1.1221 -3.69964 12.103
+          }
+        }
+      }
+    }
+  }
+  JOINT lButtock
+  {
+    OFFSET 8.77824 4.35084 1.2192
+    CHANNELS 3 Zrotation Xrotation Yrotation
+    JOINT lThigh
+    {
+      OFFSET 0 -1.70687 -2.19456
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT lShin
+      {
+        OFFSET 0 -36.8199 0.73152
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT lFoot
+        {
+          OFFSET -0.73152 -45.1104 -5.12064
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          End Site
+          {
+            OFFSET 1.1221 -3.69964 12.103
+          }
+        }
+      }
+    }
+  }
+}";
+
+        [Test]
+        public void GuessBoneMapping_daz_friendry()
+        {
+            var bvh = Bvh.Parse(daz_friendry_herarchy);
+            var detector = new BvhSkeletonEstimator();
+            var skeleton = detector.Detect(bvh);
+
+            Assert.AreEqual("hip", skeleton.GetBoneName(HumanBodyBones.Hips));
+            Assert.AreEqual("abdomen", skeleton.GetBoneName(HumanBodyBones.Spine));
+            Assert.AreEqual("chest", skeleton.GetBoneName(HumanBodyBones.Chest));
+
+            Assert.AreEqual("neck", skeleton.GetBoneName(HumanBodyBones.Neck));
+            Assert.AreEqual("head", skeleton.GetBoneName(HumanBodyBones.Head));
+
+            Assert.AreEqual("lCollar", skeleton.GetBoneName(HumanBodyBones.LeftShoulder));
+            Assert.AreEqual("lShldr", skeleton.GetBoneName(HumanBodyBones.LeftUpperArm));
+            Assert.AreEqual("lForeArm", skeleton.GetBoneName(HumanBodyBones.LeftLowerArm));
+            Assert.AreEqual("lHand", skeleton.GetBoneName(HumanBodyBones.LeftHand));
+
+            Assert.AreEqual("rCollar", skeleton.GetBoneName(HumanBodyBones.RightShoulder));
+            Assert.AreEqual("rShldr", skeleton.GetBoneName(HumanBodyBones.RightUpperArm));
+            Assert.AreEqual("rForeArm", skeleton.GetBoneName(HumanBodyBones.RightLowerArm));
+            Assert.AreEqual("rHand", skeleton.GetBoneName(HumanBodyBones.RightHand));
+
+            Assert.AreEqual("lThigh", skeleton.GetBoneName(HumanBodyBones.LeftUpperLeg));
+            Assert.AreEqual("lShin", skeleton.GetBoneName(HumanBodyBones.LeftLowerLeg));
+            Assert.AreEqual("lFoot", skeleton.GetBoneName(HumanBodyBones.LeftFoot));
+
+            Assert.AreEqual("rThigh", skeleton.GetBoneName(HumanBodyBones.RightUpperLeg));
+            Assert.AreEqual("rShin", skeleton.GetBoneName(HumanBodyBones.RightLowerLeg));
+            Assert.AreEqual("rFoot", skeleton.GetBoneName(HumanBodyBones.RightFoot));
+        }
+        #endregion
 #endif
     }
 }
