@@ -4,19 +4,29 @@ Unity humanoid utility with bvh importer.
 
 ## License
 
-* [license](./LICENSE.md)
+* [MIT](./LICENSE.md)
+
+## BVH files
+
+* https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture
+* http://mocapdata.com/
+* http://www.thetrailerspark.com/download/Mocap/Packed/EYES-JAPAN/BVH/
 
 ## BVH Importer
 
 Drop bvh file to Assets folder.
-Then, AssetPostprocessor import bvh file and create prefab includes AnimationClip with Avatar.
-Although avtar creation may fail, in that case you can create it manually later.
+Then, AssetPostprocessor import bvh file.
 
-![bvh prefab](doc/bvh_prefab.png)
+* create a hierarchy prefab 
+* create a humanoid Avatar
+* create a legacy mode AnimationClip
+* create a skinned mesh for preview
+
+![bvh prefab](doc/assets.png)
 
 Instanciate prefab to scene.
 
-![bvh gameobject](doc/bvh_gameobject.png)
+![bvh gameobject](doc/mesh.png)
 
 That object can play. 
 
