@@ -891,6 +891,163 @@ ROOT Hips
             Assert.AreEqual("RightAnkle", skeleton.GetBoneName(HumanBodyBones.RightFoot));
         }
         #endregion
+
+        const string mocapdatacom_hierarchy_2 = @"HIERARCHY
+ROOT reference
+{
+  OFFSET 0 0 0
+  CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation
+  JOINT Hips
+  {
+    OFFSET 18.0689 39.8301 -3.56659
+    CHANNELS 3 Zrotation Xrotation Yrotation
+    JOINT LeftHip
+    {
+      OFFSET 3.43 0 -2.22045e-016
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT LeftKnee
+      {
+        OFFSET 6.03961e-014 -18.47 -2.24487e-013
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT LeftAnkle
+        {
+          OFFSET 3.90443e-012 -17.95 -2.54197e-012
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          End Site
+          {
+            OFFSET 0 -3.12 0
+          }
+        }
+      }
     }
+    JOINT RightHip
+    {
+      OFFSET -3.43 -2.84217e-014 -1.11022e-015
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT RightKnee
+      {
+        OFFSET 2.16716e-013 -18.47 2.24709e-013
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT RightAnkle
+        {
+          OFFSET 5.25446e-012 -17.95 3.2685e-012
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          End Site
+          {
+            OFFSET 0 -3.12 0
+          }
+        }
+      }
+    }
+    JOINT Chest
+    {
+      OFFSET 0 4.57 -2.22045e-016
+      CHANNELS 3 Zrotation Xrotation Yrotation
+      JOINT Chest2
+      {
+        OFFSET -7.10543e-015 6.57 0
+        CHANNELS 3 Zrotation Xrotation Yrotation
+        JOINT LeftCollar
+        {
+          OFFSET 1.06 4.19 1.76
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT LeftShoulder
+          {
+            OFFSET 5.81 2.13163e-014 7.54952e-015
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            JOINT LeftElbow
+            {
+              OFFSET 2.13163e-014 -12.08 8.34888e-014
+              CHANNELS 3 Zrotation Xrotation Yrotation
+              JOINT LeftWrist
+              {
+                OFFSET 2.98428e-013 -9.82 1.61648e-013
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                End Site
+                {
+                  OFFSET 0 -7.37 0
+                }
+              }
+            }
+          }
+        }
+        JOINT RightCollar
+        {
+          OFFSET -1.06 4.19 1.76
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT RightShoulder
+          {
+            OFFSET -6.06 2.13163e-014 5.77316e-015
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            JOINT RightElbow
+            {
+              OFFSET 1.42109e-013 -11.08 -9.05942e-014
+              CHANNELS 3 Zrotation Xrotation Yrotation
+              JOINT RightWrist
+              {
+                OFFSET 5.7554e-013 -9.82 -1.98952e-013
+                CHANNELS 3 Zrotation Xrotation Yrotation
+                End Site
+                {
+                  OFFSET 0 -7.14001 0
+                }
+              }
+            }
+          }
+        }
+        JOINT Neck
+        {
+          OFFSET 0 4.05 8.88178e-016
+          CHANNELS 3 Zrotation Xrotation Yrotation
+          JOINT Head
+          {
+            OFFSET -3.55271e-015 5.19 1.06581e-014
+            CHANNELS 3 Zrotation Xrotation Yrotation
+            End Site
+            {
+              OFFSET 0 4.14001 0
+            }
+          }
+        }
+      }
+    }
+  }
+}
+";
+
+
+        [Test]
+        public void GuessBoneMapping_mocapdatacom_2()
+        {
+            var bvh = Bvh.Parse(mocapdatacom_hierarchy_2);
+            var detector = new BvhSkeletonEstimator();
+            var skeleton = detector.Detect(bvh);
+
+            Assert.AreEqual("Hips", skeleton.GetBoneName(HumanBodyBones.Hips));
+            Assert.AreEqual("Chest", skeleton.GetBoneName(HumanBodyBones.Spine));
+            Assert.AreEqual("Chest2", skeleton.GetBoneName(HumanBodyBones.Chest));
+
+            Assert.AreEqual("Neck", skeleton.GetBoneName(HumanBodyBones.Neck));
+            Assert.AreEqual("Head", skeleton.GetBoneName(HumanBodyBones.Head));
+
+            Assert.AreEqual("LeftCollar", skeleton.GetBoneName(HumanBodyBones.LeftShoulder));
+            Assert.AreEqual("LeftShoulder", skeleton.GetBoneName(HumanBodyBones.LeftUpperArm));
+            Assert.AreEqual("LeftElbow", skeleton.GetBoneName(HumanBodyBones.LeftLowerArm));
+            Assert.AreEqual("LeftWrist", skeleton.GetBoneName(HumanBodyBones.LeftHand));
+
+            Assert.AreEqual("RightCollar", skeleton.GetBoneName(HumanBodyBones.RightShoulder));
+            Assert.AreEqual("RightShoulder", skeleton.GetBoneName(HumanBodyBones.RightUpperArm));
+            Assert.AreEqual("RightElbow", skeleton.GetBoneName(HumanBodyBones.RightLowerArm));
+            Assert.AreEqual("RightWrist", skeleton.GetBoneName(HumanBodyBones.RightHand));
+
+            Assert.AreEqual("LeftHip", skeleton.GetBoneName(HumanBodyBones.LeftUpperLeg));
+            Assert.AreEqual("LeftKnee", skeleton.GetBoneName(HumanBodyBones.LeftLowerLeg));
+            Assert.AreEqual("LeftAnkle", skeleton.GetBoneName(HumanBodyBones.LeftFoot));
+
+            Assert.AreEqual("RightHip", skeleton.GetBoneName(HumanBodyBones.RightUpperLeg));
+            Assert.AreEqual("RightKnee", skeleton.GetBoneName(HumanBodyBones.RightLowerLeg));
+            Assert.AreEqual("RightAnkle", skeleton.GetBoneName(HumanBodyBones.RightFoot));
+        }
 #endif
+    }
 }

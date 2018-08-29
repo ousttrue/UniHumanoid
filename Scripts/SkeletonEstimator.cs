@@ -284,7 +284,8 @@ namespace UniHumanoid
             //
             // search bones
             //
-            var hips = GetRoot(bones);
+            var root = GetRoot(bones);
+            var hips = root.Traverse().First(x => x.Children.Count == 3);
 
             IBone spine, hip_L, hip_R;
             GetSpineAndHips(hips, out spine, out hip_L, out hip_R);
