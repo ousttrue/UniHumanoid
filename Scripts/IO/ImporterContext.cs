@@ -63,15 +63,9 @@ namespace UniHumanoid
             // build hierarchy
             //
             Root = new GameObject(System.IO.Path.GetFileNameWithoutExtension(Path));
-
-            BuildHierarchy(Root.transform, Bvh.Root, 1.0f);
-
-            var hips = Root.transform.GetChild(0);
-            var estimater = new BvhSkeletonEstimator();
-            var skeleton = estimater.Detect(hips.transform);
-            var description = AvatarDescription.Create();
-            //var values= ((HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones)));
-            description.SetHumanBones(skeleton.ToDictionary(hips.Traverse().ToArray()));
+            var hips = BuildHierarchy(Root.transform, Bvh.Root, 1.0f);
+            var skeleton = Skeleton.Estimate(hips);
+            var description = AvatarDescription.Create(hips.Traverse().ToArray(), skeleton);
 
             //
             // scaling. reposition
@@ -128,7 +122,7 @@ namespace UniHumanoid
 
         }
 
-        static void BuildHierarchy(Transform parent, BvhNode node, float toMeter)
+        static Transform BuildHierarchy(Transform parent, BvhNode node, float toMeter)
         {
             var go = new GameObject(node.Name);
             go.transform.localPosition = node.Offset.ToXReversedVector3() * toMeter;
@@ -141,6 +135,8 @@ namespace UniHumanoid
             {
                 BuildHierarchy(go.transform, child, toMeter);
             }
+
+            return go.transform;
         }
         #endregion
 

@@ -1,16 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
 namespace UniHumanoid
 {
+    /// <summary>
+    /// Mapping HumanBodyBones to BoneIndex
+    /// </summary>
     public struct Skeleton
     {
-        int[] _boneIndices;
-        string[] _boneNames;
+        Dictionary<HumanBodyBones, int> m_indexMap;
+        public Dictionary<HumanBodyBones, int> Bones
+        {
+            get { return m_indexMap; }
+        }
+        public int GetBoneIndex(HumanBodyBones bone)
+        {
+            int index;
+            if (m_indexMap.TryGetValue(bone, out index))
+            {
+                return index;
+            }
+            else
+            {
+                return -1;
+            }
+        }
 
+#if UNITY_EDITOR
+        /// <summary>
+        /// For UnitTest
+        /// </summary>
+        Dictionary<HumanBodyBones, string> m_nameMap;
+        /// <summary>
+        /// ForTest
+        /// </summary>
+        /// <param name="bone"></param>
+        /// <returns></returns>
+        public string GetBoneName(HumanBodyBones bone)
+        {
+            string name;
+            if (m_nameMap.TryGetValue(bone, out name))
+            {
+                return name;
+            }
+            else
+            {
+                return null;
+            }
+        }
+#endif
+
+        public static Skeleton Estimate(Transform hips)
+        {
+            var estimater = new BvhSkeletonEstimator();
+            return estimater.Detect(hips);
+        }
+
+        /// <summary>
+        /// Register bone's HumanBodyBones
+        /// </summary>
+        /// <param name="bone"></param>
+        /// <param name="bones"></param>
+        /// <param name="b"></param>
         public void Set(HumanBodyBones bone, IList<IBone> bones, IBone b)
         {
             if (b != null)
@@ -21,38 +73,20 @@ namespace UniHumanoid
 
         public void Set(HumanBodyBones bone, int index, string name)
         {
-            if (_boneIndices == null)
+            if (m_indexMap == null)
             {
-                _boneIndices = Enumerable.Repeat(-1, (int)HumanBodyBones.LastBone).ToArray();
+                m_indexMap = new Dictionary<HumanBodyBones, int>();
             }
-            _boneIndices[(int)bone] = index;
-            if (_boneNames == null)
+            m_indexMap[bone] = index;
+
+#if UNITY_EDITOR
+            if (m_nameMap == null)
             {
-                _boneNames = new string[(int)HumanBodyBones.LastBone];
+                m_nameMap = new Dictionary<HumanBodyBones, string>();
             }
-            _boneNames[(int)bone] = name;
+            m_nameMap[bone] = name;
+#endif
         }
 
-        public int GetBoneIndex(HumanBodyBones bone)
-        {
-            var index = (int)bone;
-            if (index < 0) return -1;
-            if (index >= _boneIndices.Length) return -1;
-            return _boneIndices[(int)bone];
-        }
-
-        public string GetBoneName(HumanBodyBones bone)
-        {
-            return _boneNames[(int)bone];
-        }
-
-        public Dictionary<HumanBodyBones, T> ToDictionary<T>(T[] values)
-        {
-            var self = this;
-            return ((HumanBodyBones[])Enum.GetValues(typeof(HumanBodyBones)))
-                .Where(x => self.GetBoneIndex(x) >= 0)
-                .ToDictionary(x => x, x => values[self.GetBoneIndex(x)])
-                ;
-        }
     }
 }
