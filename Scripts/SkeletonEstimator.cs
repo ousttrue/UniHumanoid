@@ -6,13 +6,7 @@ using UnityEngine;
 
 namespace UniHumanoid
 {
-    public interface IBone
-    {
-        string Name { get; }
-        Vector3 SkeletonLoacalPosition { get; }
-        IBone Parent { get; }
-        IList<IBone> Children { get; }
-    }
+
 
     public static class IBoneExtensions
     {
@@ -34,7 +28,7 @@ namespace UniHumanoid
             int i = 0;
             foreach (var x in self.Traverse())
             {
-                sum += x.SkeletonLoacalPosition;
+                sum += x.SkeletonLocalPosition;
                 ++i;
             }
             return sum / i;
@@ -49,7 +43,7 @@ namespace UniHumanoid
             get;
         }
 
-        public Vector3 SkeletonLoacalPosition
+        public Vector3 SkeletonLocalPosition
         {
             private set;
             get;
@@ -58,7 +52,7 @@ namespace UniHumanoid
         public BvhBone(string name, Vector3 position)
         {
             Name = name;
-            SkeletonLoacalPosition = position;
+            SkeletonLocalPosition = position;
         }
 
         public override string ToString()
@@ -82,7 +76,7 @@ namespace UniHumanoid
         {
             foreach(Transform child in t)
             {
-                var childBone = new BvhBone(child.name, SkeletonLoacalPosition + child.localPosition);
+                var childBone = new BvhBone(child.name, SkeletonLocalPosition + child.localPosition);
                 childBone.Parent = this;
                 _children.Add(childBone);
 
@@ -94,7 +88,7 @@ namespace UniHumanoid
         {
             foreach (var child in node.Children)
             {
-                var childBone = new BvhBone(child.Name, SkeletonLoacalPosition + child.Offset.ToXReversedVector3());
+                var childBone = new BvhBone(child.Name, SkeletonLocalPosition + child.Offset.ToXReversedVector3());
                 childBone.Parent = this;
                 _children.Add(childBone);
 
