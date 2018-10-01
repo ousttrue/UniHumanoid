@@ -2,9 +2,20 @@
 
 Unity humanoid utility with bvh importer.
 
-## License
+# License
 
 * [MIT](./LICENSE.md)
+
+# Sample Scene
+
+## RuntimeLoader
+* Scenes/RuntimeBvhLoader.unity
+
+## RuntimeLoader and PoseTransfer
+load BVH and transfer pose to any model with humanoid avatar.
+
+* Scenes/PoseTransfer.unity
+
 
 ## BVH files
 

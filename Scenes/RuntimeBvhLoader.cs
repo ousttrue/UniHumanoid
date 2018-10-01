@@ -16,6 +16,9 @@ namespace UniHumanoid
         [SerializeField]
         Button m_openButton;
 
+        [SerializeField]
+        HumanPoseTransfer m_dst;
+
         UnityAction m_onClick;
 
         private void Awake()
@@ -68,6 +71,14 @@ namespace UniHumanoid
             m_context = new BvhImporterContext();
             m_context.Parse(path);
             m_context.Load();
+
+            var src = m_context.Root.AddComponent<HumanPoseTransfer>();
+
+            if (m_dst != null)
+            {
+                m_dst.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer;
+                m_dst.Source = src;
+            }
         }
     }
 }

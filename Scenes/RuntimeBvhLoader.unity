@@ -279,10 +279,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 745406201}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77f55745d014f474eabd2976b55cc8f0, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b994e1476323bf4fbe1ae28bea164f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_openButton: {fileID: 860463875}
+  m_dst: {fileID: 0}
 --- !u!114 &745406203
 MonoBehaviour:
   m_ObjectHideFlags: 0
