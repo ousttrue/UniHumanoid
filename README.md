@@ -1,3 +1,7 @@
+> I decided to integrate this library with UniVRM for maintenance reason (submodule burdensome). Continue updating within UniVRM
+
+* [UniVRM](https://github.com/dwango/UniVRM)
+
 # UniHumanoid
 
 Unity humanoid utility with bvh importer.
